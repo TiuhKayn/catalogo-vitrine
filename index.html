@@ -381,6 +381,272 @@
             transform: translateY(-2px);
         }
 
+        /* MENU LATERAL ESQUERDO */
+        .nav-sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            max-width: 80vw;
+            height: 100vh;
+            background-color: var(--bg-card);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-sidebar.active {
+            left: 0;
+        }
+
+        .nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s;
+        }
+
+        .nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-header h3 {
+            margin: 0;
+            color: white;
+            font-size: 20px;
+        }
+
+        .close-nav {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .close-nav:hover {
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .nav-links a {
+            padding: 15px 20px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s;
+        }
+
+        .nav-links a i {
+            font-size: 20px;
+            color: var(--accent-blue);
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-links a:hover {
+            background-color: var(--cat-hover);
+        }
+
+        /* CARRINHO DE COMPRAS */
+        .cart-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-badge {
+            background-color: var(--accent-red);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: -6px;
+            right: -8px;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 320px;
+            max-width: 85vw;
+            height: 100vh;
+            background-color: var(--bg-card);
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+        }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s;
+        }
+
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            margin: 0;
+            color: white;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .close-cart:hover {
+            color: white;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 50px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 10px;
+            background-color: var(--bg-input);
+            padding: 10px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .cart-item-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+            object-fit: cover;
+            background-color: #000;
+        }
+
+        .cart-item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .cart-item-title {
+            font-size: 13px;
+            color: white;
+            margin: 0 0 5px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .cart-item-price {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--accent-blue);
+        }
+
+        .cart-item-remove {
+            background: none;
+            border: none;
+            color: var(--accent-red);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-header);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
         .btn-add {
             background-color: var(--accent-blue);
         }
@@ -400,10 +666,16 @@
 
     <header>
         <div class="header-top">
-            <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <button class="menu-btn"
+                onclick="document.getElementById('navSidebar').classList.add('active'); document.getElementById('navOverlay').classList.add('active');"><i
+                    class="fa-solid fa-bars"></i></button>
             <div class="logo">
                 <i class="fa-solid fa-desktop"></i> PCManaus
             </div>
+            <button class="cart-btn" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartBadge">0</span>
+            </button>
         </div>
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -419,9 +691,47 @@
         <!-- Seções de categorias geradas via JS -->
     </main>
 
+    <!-- Estrutura Menu Lateral Esquerdo -->
+    <div class="nav-overlay" id="navOverlay"
+        onclick="document.getElementById('navSidebar').classList.remove('active'); this.classList.remove('active');">
+    </div>
+    <nav class="nav-sidebar" id="navSidebar">
+        <div class="nav-header">
+            <h3>Menu</h3>
+            <button class="close-nav"
+                onclick="document.getElementById('navSidebar').classList.remove('active'); document.getElementById('navOverlay').classList.remove('active');"><i
+                    class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="nav-links">
+            <a href="javascript:void(0)" id="faleConoscoLink" onclick="return window.irParaFaleConosco(event)"><i
+                    class="fa-brands fa-whatsapp"></i> Fale Conosco</a>
+        </div>
+    </nav>
+
+    <!-- Estrutura Carrinho Gaveta Direita -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Seu Carrinho</h3>
+            <button class="close-cart" onclick="toggleCart()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cartItemsList">
+            <!-- Itens do Carrinho injetados via JS -->
+            <div class="cart-empty-state">O carrinho está vazio</div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotalValue">R$ 0,00</span>
+            </div>
+            <button class="btn btn-buy" style="width: 100%; margin-top: 15px;" onclick="finalizarCompra()">Finalizar
+                Compra <i class="fa-brands fa-whatsapp"></i></button>
+        </div>
+    </aside>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDsvE-Bt_rmSsNFlJq5ZktND5JViCsadL0",
@@ -435,7 +745,29 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const categoriasConfig = [
+        let globalFaleConosco = "";
+
+        // --- Configuração Global da Loja ---
+        onSnapshot(doc(db, "loja_config", "geral"), (docSnap) => {
+            if (docSnap.exists()) {
+                const config = docSnap.data();
+                if (config.whatsappPrincipal) {
+                    globalFaleConosco = config.whatsappPrincipal.replace(/\D/g, '');
+                }
+            }
+        });
+
+        window.irParaFaleConosco = (e) => {
+            e.preventDefault();
+            if (globalFaleConosco) {
+                window.open(`https://wa.me/${globalFaleConosco}`, '_blank');
+            } else {
+                alert("Aviso: O administrador ainda não configurou o número de Fale Conosco.");
+            }
+            return false;
+        };
+
+        const categorias = [
             { nome: "Todas", icon: "fa-border-all" },
             { nome: "Controle", icon: "fa-gamepad" },
             { nome: "Resfriadores", icon: "fa-fan" },
@@ -456,6 +788,14 @@
 
         let produtosGlobais = [];
         let categoriaAtiva = "Todas";
+
+        // Estado do Carrinho (Global e Salvo no Navegador)
+        let carrinho = JSON.parse(localStorage.getItem('pcm_carrinho')) || [];
+
+        function salvarCarrinhoBD() {
+            localStorage.setItem('pcm_carrinho', JSON.stringify(carrinho));
+            renderizarCarrinho();
+        }
 
         // Sidebar logic
         window.toggleSidebar = () => {
@@ -629,8 +969,8 @@
                     </div>
 
                     <div class="card-actions">
-                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" ${p.vendido ? 'disabled' : ''} onclick="alert('Funcionalidade Carrinho em breve!')">Adicionar</button>
-                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" ${p.vendido ? 'disabled' : ''} onclick="comprarPeloWhatsapp(${callWhatsappArgs})">Comprar 1</button>
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="adicionarAoCarrinho('${p.id}', '${safeName}', ${valorZap}, '${fotos[0] || ''}', '${p.whatsapp || ''}')">Adicionar <i class="fa-solid fa-cart-shopping"></i></button>
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="comprarPeloWhatsapp(${callWhatsappArgs})">Comprar <i class="fa-brands fa-whatsapp"></i></button>
                     </div>
                 `;
                     grid.appendChild(card);
@@ -666,7 +1006,7 @@
             });
         }, 1000);
 
-        // 5. Encaminhamento para WhatsApp
+        // 5. Encaminhamento para WhatsApp (Dinâmico para Carrinho)
         window.comprarPeloWhatsapp = (numero, tituloProduto, precoFinal) => {
             if (!numero) {
                 alert('Este anúncio não possui um número de WhatsApp configurado pelo Vendedor.');
@@ -674,19 +1014,38 @@
             }
 
             let formatPreco = parseFloat(precoFinal).toFixed(2).replace('.', ',');
-            let mensagem = '';
+            let mensagem = `Olá, quero comprar o seguinte item:\n\n•${tituloProduto}\n- Valor: R$ ${formatPreco}\n\nTotal: R$ ${formatPreco}`;
 
-            // Verifica se tituloProduto é uma Array de itens (preparando pro Cart)
-            if (Array.isArray(tituloProduto)) {
-                let listagem = tituloProduto.map(item => `•${item.nome}\n- Valor: R$ ${parseFloat(item.valor).toFixed(2).replace('.', ',')}`).join('\n\n');
-                mensagem = `Olá, quero comprar os seguintes itens:\n\n${listagem}\n\nTotal: R$ ${formatPreco}`;
-            } else {
-                mensagem = `Olá, quero comprar o seguinte item:\n\n•${tituloProduto}\n- Valor: R$ ${formatPreco}\n\nTotal: R$ ${formatPreco}`;
-            }
-
-            // Tratamento do número (remover + e espaços se houver)
             const cleanNumber = numero.replace(/\D/g, '');
             const url = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(mensagem)}`;
+
+            window.open(url, '_blank');
+        };
+
+        window.finalizarCompra = () => {
+            if (carrinho.length === 0) return alert('Seu carrinho está vazio!');
+
+            // Assumimos que a loja tem um número padrão ou pega do primeiro item.
+            // Para segurança num sistema de Multi-Vendedor, vamos enviar para o número do 1o item
+            const numeroVenda = carrinho[0].whatsapp;
+            if (!numeroVenda) return alert('Número de WhatsApp da Loja não configurado.');
+
+            let totalCompra = 0;
+            let listagem = carrinho.map(item => {
+                totalCompra += item.valor;
+                return `• *${item.nome}*\n- Valor: R$ ${item.valor.toFixed(2).replace('.', ',')}`;
+            }).join('\n\n');
+
+            let formatTotal = totalCompra.toFixed(2).replace('.', ',');
+            let mensagem = `Olá, quero comprar os seguintes itens:\n\n${listagem}\n\n*Total da Compra*: R$ ${formatTotal}`;
+
+            const cleanNumber = numeroVenda.replace(/\D/g, '');
+            const url = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(mensagem)}`;
+
+            // Limpar Carrinho após encaminhar
+            carrinho = [];
+            salvarCarrinhoBD();
+            toggleCart();
 
             window.open(url, '_blank');
         };
@@ -695,13 +1054,76 @@
         window.deslizarCard = (produtoId, direcao) => {
             const slider = document.getElementById(`slider-${produtoId}`);
             if (!slider) return;
-            // 1 container mede aprox 100% da largura visível
             const deslizeOffset = slider.clientWidth;
             slider.scrollBy({ left: direcao * deslizeOffset, behavior: 'smooth' });
         };
 
+        // 7. Lógica Sidebar do Carrinho
+        window.toggleCart = () => {
+            document.getElementById('cartSidebar').classList.toggle('active');
+            document.getElementById('cartOverlay').classList.toggle('active');
+        };
+
+        window.adicionarAoCarrinho = (id, nome, valor, fotoUrl, whatsapp) => {
+            carrinho.push({ id, nome, valor: Number(valor), fotoUrl, whatsapp });
+            salvarCarrinhoBD();
+
+            // Feedback Visual e Abertura
+            const badge = document.getElementById('cartBadge');
+            badge.style.transform = 'scale(1.5)';
+            setTimeout(() => badge.style.transform = 'scale(1)', 300);
+
+            // Abre o carrinho para o usuario ver
+            document.getElementById('cartSidebar').classList.add('active');
+            document.getElementById('cartOverlay').classList.add('active');
+        };
+
+        window.removerDoCarrinho = (index) => {
+            carrinho.splice(index, 1);
+            salvarCarrinhoBD();
+        };
+
+        function renderizarCarrinho() {
+            const list = document.getElementById('cartItemsList');
+            const totalElement = document.getElementById('cartTotalValue');
+            const badge = document.getElementById('cartBadge');
+
+            badge.innerText = carrinho.length;
+
+            if (carrinho.length === 0) {
+                list.innerHTML = '<div class="cart-empty-state">O carrinho está vazio</div>';
+                totalElement.innerText = 'R$ 0,00';
+                return;
+            }
+
+            list.innerHTML = '';
+            let somaTotal = 0;
+
+            carrinho.forEach((item, index) => {
+                somaTotal += item.valor;
+
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+
+                const fotoHtml = item.fotoUrl ? `<img src="${item.fotoUrl}" class="cart-item-img">` : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;color:#666;"><i class="fa-solid fa-image"></i></div>`;
+
+                div.innerHTML = `
+                    ${fotoHtml}
+                    <div class="cart-item-info">
+                        <h4 class="cart-item-title">${item.nome}</h4>
+                        <span class="cart-item-price">R$ ${item.valor.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <button class="cart-item-remove" onclick="removerDoCarrinho(${index})" title="Remover item"><i class="fa-solid fa-trash"></i></button>
+                `;
+                list.appendChild(div);
+            });
+
+            totalElement.innerText = `R$ ${somaTotal.toFixed(2).replace('.', ',')}`;
+        }
+
         // INIT
         renderCategoriesBar();
+        renderizarCarrinho();
 
     </script>
 </body>
