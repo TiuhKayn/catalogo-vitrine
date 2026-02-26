@@ -1,67 +1,544 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitrine - Peças Manaus</title>
+    <title>PCManaus - Vitrine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: sans-serif; background: #121212; color: white; padding: 20px; text-align: center; }
-        #lista-produtos { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
-        .card { background: #1e1e1e; padding: 15px; border-radius: 10px; border: 1px solid #333; text-align: left; }
-        .card h3 { color: #00ff88; margin: 0; }
-        .preco { font-weight: bold; font-size: 1.2em; margin: 10px 0; }
-    </style>
-</head>
-<body>
-
-    <h1 style="color: #00ff88;">Peças Disponíveis</h1>
-    <div id="lista-produtos">Aguardando conexão com o banco...</div>
-
-<script type="module">
-    // Usando uma versão específica e estável para evitar erros de carregamento
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    console.log("🚀 Script da Vitrine Iniciado!");
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDsvE-Bt_rmSsNFlJq5ZktND5JViCsadL0",
-      authDomain: "loja-virtual-f514c.firebaseapp.com",
-      projectId: "loja-virtual-f514c",
-      storageBucket: "loja-virtual-f514c.firebasestorage.app",
-      messagingSenderId: "313055738172",
-      appId: "1:313055738172:web:78ee67f6a07a427a574639"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const listaDiv = document.getElementById('lista-produtos');
-
-    // Escutando a coleção "produtos" que você criou no ADM
-    onSnapshot(collection(db, "produtos"), (snapshot) => {
-        console.log("✅ Dados recebidos do Firebase!");
-        listaDiv.innerHTML = ''; 
-        
-        if (snapshot.empty) {
-            listaDiv.innerHTML = "Nenhum produto encontrado no banco.";
-            return;
+        :root {
+            --bg-body: #161A23;
+            --bg-card: #202634;
+            --bg-header: #11141C;
+            --bg-input: #0B0D13;
+            --text-main: #FFFFFF;
+            --text-muted: #A0A5B5;
+            --accent-green: #10B981;
+            --accent-blue: #3B82F6;
+            --accent-red: #EF4444;
+            --accent-orange: #F59E0B;
+            --border-color: #374151;
+            --cat-bg: #2D3343;
+            --cat-hover: #3E465B;
         }
 
-        snapshot.forEach((doc) => {
-            const p = doc.data();
-            console.log("Exibindo item:", p.nome);
-            listaDiv.innerHTML += `
-                <div class="card">
-                    <h3>${p.nome}</h3>
-                    <div class="preco">R$ ${p.valor}</div>
-                    <p>${p.desc}</p>
-                </div>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            background-color: var(--bg-header);
+            padding: 15px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .menu-btn {
+            position: absolute;
+            left: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--accent-blue);
+        }
+
+        .search-container {
+            width: 100%;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 12px 15px 12px 40px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .search-container input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 14px;
+            color: var(--text-muted);
+        }
+
+        /* CATEGORIAS ROW */
+        .categories-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px 30px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .categories-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .categories-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .cat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            min-width: 70px;
+            transition: transform 0.2s;
+        }
+
+        .cat-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .cat-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--cat-bg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: var(--accent-blue);
+            transition: background 0.2s;
+        }
+
+        .cat-item:hover .cat-icon {
+            background-color: var(--cat-hover);
+        }
+
+        .cat-item.active .cat-icon {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+
+        .cat-name {
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .cat-item.active .cat-name {
+            color: white;
+        }
+
+        /* MAIN CONTENT */
+        main {
+            padding: 10px 30px 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: var(--accent-blue);
+            margin: 30px 0 15px;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+            display: inline-block;
+        }
+
+        .grid-produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        /* CARD */
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-images {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 12px;
+            height: 120px;
+        }
+
+        .img-container {
+            flex: 1;
+            background-color: white;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .badge-promo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--accent-red);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .badge-esgotado {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4B5563;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.3;
+            color: white;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .descricao {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 6;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .local-retirada {
+            font-size: 11px;
+            color: #8B94A5;
+            margin-bottom: 15px;
+        }
+
+        .preco-container {
+            margin-bottom: 15px;
+        }
+
+        .preco-antigo {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            margin-bottom: 2px;
+        }
+
+        .preco-atual {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--accent-orange);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            border: none;
+            border-radius: 6px;
+            padding: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: center;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-add {
+            background-color: var(--accent-blue);
+        }
+
+        .btn-buy {
+            background-color: var(--accent-green);
+        }
+
+        .btn-disabled {
+            background-color: #4B5563;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-top">
+            <button class="menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <div class="logo">
+                <i class="fa-solid fa-desktop"></i> PCManaus
+            </div>
+        </div>
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Buscar produtos..." onkeyup="renderizarCategorias()">
+        </div>
+    </header>
+
+    <div class="categories-container" id="catContainer">
+        <!-- Ícones de categoria gerados via JS -->
+    </div>
+
+    <main id="mainContent">
+        <!-- Seções de categorias geradas via JS -->
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDsvE-Bt_rmSsNFlJq5ZktND5JViCsadL0",
+            authDomain: "loja-virtual-f514c.firebaseapp.com",
+            projectId: "loja-virtual-f514c",
+            storageBucket: "loja-virtual-f514c.firebasestorage.app",
+            messagingSenderId: "313055738172",
+            appId: "1:313055738172:web:78ee67f6a07a427a574639"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const categoriasConfig = [
+            { nome: "Todas", icon: "fa-border-all" },
+            { nome: "Controle", icon: "fa-gamepad" },
+            { nome: "Resfriadores", icon: "fa-fan" },
+            { nome: "Teclado", icon: "fa-keyboard" },
+            { nome: "Gabinete", icon: "fa-server" },
+            { nome: "Fonte", icon: "fa-plug" },
+            { nome: "Processador", icon: "fa-microchip" },
+            { nome: "Armazenamento", icon: "fa-hard-drive" },
+            { nome: "Headset", icon: "fa-headphones" },
+            { nome: "Placa de Vídeo", icon: "fa-memory" },
+            { nome: "Monitor", icon: "fa-desktop" },
+            { nome: "Memória RAM", icon: "fa-memory" },
+            { nome: "Placa-mãe", icon: "fa-chess-board" },
+            { nome: "Mouse", icon: "fa-mouse" },
+            { nome: "Kit", icon: "fa-boxes-stacked" },
+            { nome: "Outros", icon: "fa-ellipsis" }
+        ];
+
+        let produtosGlobais = [];
+        let categoriaAtiva = "Todas";
+
+        // 1. Renderizar barra de categorias
+        function renderCategoriesBar() {
+            const container = document.getElementById('catContainer');
+            container.innerHTML = '';
+            categoriasConfig.forEach(cat => {
+                const div = document.createElement('div');
+                div.className = `cat-item ${categoriaAtiva === cat.nome ? 'active' : ''}`;
+                div.onclick = () => {
+                    categoriaAtiva = cat.nome;
+                    renderCategoriesBar();
+                    renderizarCategorias();
+                };
+                div.innerHTML = `
+                <div class="cat-icon"><i class="fa-solid ${cat.icon}"></i></div>
+                <div class="cat-name">${cat.nome}</div>
             `;
+                container.appendChild(div);
+            });
+        }
+
+        // 2. Fetch e Listen Firestore
+        onSnapshot(collection(db, "produtos"), (snapshot) => {
+            produtosGlobais = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // Ordenar novidades primeiro
+            produtosGlobais.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
+            renderizarCategorias();
         });
-    }, (error) => {
-        console.error("❌ Erro ao ler o banco:", error);
-        alert("Erro de permissão! Verifique se o Firestore está em 'Modo de Teste'.");
-    });
-</script>
+
+        // 3. Renderizar seções e grid
+        window.renderizarCategorias = () => {
+            const main = document.getElementById('mainContent');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            main.innerHTML = '';
+
+            if (produtosGlobais.length === 0) {
+                main.innerHTML = '<p style="text-align:center; color: #888;">Carregando produtos ou nenhum disponível...</p>';
+                return;
+            }
+
+            // Agrupar produtos por categoria
+            const grouped = {};
+            produtosGlobais.forEach(p => {
+                // Filtrar vendidos se preferir não mostrar (opcional, mas comum em lojas mostrar como indisponível)
+                // Aqui vamos mostrar, mas com tag de Esgotado.
+
+                // Filtro de busca
+                if (search && !p.nome.toLowerCase().includes(search)) return;
+
+                // Filtro de Categoria do Topo
+                if (categoriaAtiva !== "Todas" && p.categoria !== categoriaAtiva) return;
+
+                const c = p.categoria || 'Outros';
+                if (!grouped[c]) grouped[c] = [];
+                grouped[c].push(p);
+            });
+
+            // Para cada categoria que tem produtos, criar a seção
+            // Ordenar as chaves alfabeticamente ou conforme array original
+            const catKeys = Object.keys(grouped).sort();
+
+            if (catKeys.length === 0) {
+                main.innerHTML = '<p style="text-align:center; color: #888;">Nenhum produto encontrado.</p>';
+                return;
+            }
+
+            catKeys.forEach(catName => {
+                const section = document.createElement('div');
+
+                // Esconder titulo de categoria se já tiver filtrado apenas nela, ou mostrar sempre (como na imagem)
+                if (categoriaAtiva === "Todas") {
+                    section.innerHTML = `<h2 class="section-title">${catName}</h2>`;
+                }
+
+                const grid = document.createElement('div');
+                grid.className = 'grid-produtos';
+
+                grouped[catName].forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+
+                    // Promoção e desconto simulado (15%) só pra visual
+                    const isPromo = p.promocao;
+                    const valorAtual = Number(p.valor);
+                    const valorAntigo = isPromo ? (valorAtual * 1.15).toFixed(2) : null;
+
+                    // Fotos (Até 2 na vitrine)
+                    const fotos = p.fotos || [];
+                    let fotosHtml = '';
+                    if (fotos.length > 0) {
+                        fotosHtml += `<div class="card-images">`;
+                        fotosHtml += `<div class="img-container"><img src="${fotos[0]}" alt="Foto 1"></div>`;
+                        if (fotos.length > 1) {
+                            fotosHtml += `<div class="img-container"><img src="${fotos[1]}" alt="Foto 2"></div>`;
+                        } else {
+                            // Se tiver só 1, duplica o espaço vazado ou tenta ocupar o centro
+                        }
+                        fotosHtml += `</div>`;
+                    } else {
+                        fotosHtml = `<div class="card-images"><div class="img-container"><i class="fa-solid fa-image" style="font-size:30px; color:#ddd"></i></div></div>`;
+                    }
+
+                    card.innerHTML = `
+                    ${p.vendido ? '<div class="badge-esgotado">ESGOTADO</div>' : ''}
+                    ${!p.vendido && isPromo ? '<div class="badge-promo">-15% OFERTA</div>' : ''}
+                    
+                    ${fotosHtml}
+                    <h3>${p.nome}</h3>
+                    
+                    <div class="descricao">${p.desc || 'Sem descriçao detallhada.'}</div>
+                    
+                    <div class="local-retirada">
+                        <i class="fa-solid fa-location-dot"></i> Local de Retirada: A combinar
+                    </div>
+
+                    <div class="preco-container">
+                        ${isPromo && !p.vendido ? `<div class="preco-antigo">R$ ${valorAntigo.replace('.', ',')}</div>` : ''}
+                        <div class="preco-atual" style="${p.vendido ? 'color: gray;' : ''}">R$ ${valorAtual.toFixed(2).replace('.', ',')}</div>
+                    </div>
+
+                    <div class="card-actions">
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" ${p.vendido ? 'disabled' : ''} onclick="alert('Funcionalidade Carrinho em breve!')">Adicionar</button>
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" ${p.vendido ? 'disabled' : ''} onclick="alert('Redirecionando para compra...')">Comprar 1</button>
+                    </div>
+                `;
+                    grid.appendChild(card);
+                });
+
+                section.appendChild(grid);
+                main.appendChild(section);
+            });
+        };
+
+        // INIT
+        renderCategoriesBar();
+
+    </script>
+
 </body>
+
 </html>
