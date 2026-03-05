@@ -218,42 +218,41 @@
             overscroll-behavior-x: contain;
             margin-bottom: 15px;
             aspect-ratio: 1;
-            /* Altura auto-proporcional focada num quadrado perfeito pra Instagram feel */
             position: relative;
             scrollbar-width: none;
-            /* Ocultar scrollbar no Firefox */
+            gap: 20px;
+            width: 100%;
         }
 
         .card-images::-webkit-scrollbar {
             display: none;
-            /* Ocultar scrollbar no Chrome/Safari */
         }
 
         .img-container {
             position: relative;
             flex: 0 0 100%;
+            min-width: 100%;
+            max-width: 100%;
             background-color: #0B0D13;
-            background-image:
-                linear-gradient(45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.03) 75%, rgba(255, 255, 255, 0.03)),
-                linear-gradient(45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.03) 75%, rgba(255, 255, 255, 0.03));
-            background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            border-radius: 6px;
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            scroll-snap-align: center;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            background-clip: padding-box;
+            isolation: isolate;
+            transform: translateZ(0);
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
         }
 
         .img-container img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            transform: scale(1.08);
-            /* Aproxima a imagem / reduz margem */
             image-rendering: high-quality;
-            /* Suaviza as bordas serrilhadas */
+            border-radius: inherit;
         }
 
         .slide-arrow {
@@ -931,9 +930,10 @@
                         fotosHtml += `<div class="card-images" id="slider-${p.id}">`;
                         for (let i = 0; i < fotos.length; i++) {
                             fotosHtml += `
-                                <div class="img-container" style="background-image: url('${fotos[i]}'); background-size: cover; background-position: center;">
-                                    <div style="position: absolute; inset: 0; backdrop-filter: blur(15px); background-color: rgba(0,0,0,0.5);"></div>
-                                    <img src="${fotos[i]}" alt="Foto ${i + 1}" style="position: relative; z-index: 1;">
+                                <div class="img-container">
+                                    <div style="position: absolute; inset: -20px; background-image: url('${fotos[i]}'); background-size: cover; background-position: center; filter: blur(15px); z-index: 0;"></div>
+                                    <div style="position: absolute; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 1;"></div>
+                                    <img src="${fotos[i]}" alt="Foto ${i + 1}" style="position: relative; z-index: 2; border-radius: inherit;">
                                 </div>
                             `;
                         }
@@ -1054,7 +1054,7 @@
         window.deslizarCard = (produtoId, direcao) => {
             const slider = document.getElementById(`slider-${produtoId}`);
             if (!slider) return;
-            const deslizeOffset = slider.clientWidth;
+            const deslizeOffset = slider.clientWidth + 20; // 20px referente ao gap no CSS
             slider.scrollBy({ left: direcao * deslizeOffset, behavior: 'smooth' });
         };
 
