@@ -810,7 +810,7 @@
         .detail-title { font-size: 26px; font-weight: 700; color: white; margin: 0; }
         .detail-seller { color: var(--accent-blue); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .detail-seller:hover { text-decoration: underline; }
-        .detail-price-box { background: var(--bg-input); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
+        .detail-price-box { margin-bottom: 5px; }
         .detail-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; white-space: pre-wrap; }
         .detail-badges { display: flex; gap: 15px; flex-wrap: wrap; margin-top: -5px; }
         .detail-badge { background: var(--bg-input); color: #B0B3B8; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-color); }
@@ -1471,7 +1471,7 @@
                 
                 <div class="detail-price-box">${precoHtml}</div>
                 
-                <div style="display:flex; flex-direction:column; gap:8px; margin-top:-10px; margin-bottom:10px;">
+                <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
                     <div style="color:#888; font-size:13px; display:flex; align-items:center; gap:6px;">
                         <i class="fa-solid fa-layer-group" style="color:var(--accent-blue);"></i>
                         Categoria: <strong style="color:white;">${p.categoria || 'Geral'}</strong>
