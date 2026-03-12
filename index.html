@@ -109,16 +109,20 @@
             gap: 20px;
             padding: 20px 30px;
             overflow-x: auto;
-            scrollbar-width: thin;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            cursor: grab;
+        }
+
+        .categories-container:active {
+            cursor: grabbing;
         }
 
         .categories-container::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .categories-container::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
+            display: none;
+            /* Safari and Chrome */
         }
 
         .cat-item {
@@ -129,6 +133,8 @@
             cursor: pointer;
             min-width: 90px;
             transition: transform 0.2s;
+            user-select: none;
+            /* Previne seleção do texto ao arrastar */
         }
 
         .cat-item:hover {
@@ -146,6 +152,8 @@
             font-size: 30px;
             color: var(--accent-blue);
             transition: background 0.2s, box-shadow 0.2s;
+            -webkit-user-drag: none;
+            /* Previne arraste de SVG/IMG caso existam */
         }
 
         .cat-item:hover .cat-icon {
@@ -590,6 +598,224 @@
             position: relative;
         }
 
+        /* MODAL DE DETALHES */
+        .detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .detail-modal.active {
+            display: flex;
+        }
+
+        .detail-content {
+            background-color: var(--bg-card);
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalPop 0.3s ease-out;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .detail-seller {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .detail-seller:hover {
+            color: var(--accent-purple);
+        }
+
+        .detail-seller-img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .detail-seller-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .close-detail {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .close-detail:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .detail-body {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .detail-body {
+                flex-direction: column;
+            }
+            .detail-content {
+                max-height: 95vh;
+            }
+        }
+
+        .detail-media {
+            flex: 1.2;
+            background-color: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            overflow: hidden;
+        }
+
+        .detail-info {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        /* ZOOM SYSTEM */
+        .zoom-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            cursor: zoom-in;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .zoom-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.1s ease-out;
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* DETAIL CAROUSEL */
+        .detail-carousel-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .detail-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .detail-dot.active {
+            background: var(--accent-blue);
+            transform: scale(1.2);
+        }
+
+        .detail-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            padding: 15px 10px;
+            cursor: pointer;
+            z-index: 5;
+            font-size: 20px;
+            transition: background 0.2s;
+        }
+
+        .detail-nav-btn:hover { background: rgba(0, 0, 0, 0.8); }
+        .detail-prev { left: 0; border-radius: 0 8px 8px 0; }
+        .detail-next { right: 0; border-radius: 8px 0 0 8px; }
+
+        .detail-title { font-size: 26px; font-weight: 700; color: white; margin: 0; }
+        .detail-seller { color: var(--accent-blue); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .detail-seller:hover { text-decoration: underline; }
+        .detail-price-box { background: var(--bg-input); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); }
+        .detail-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; white-space: pre-wrap; }
+        .detail-badges { display: flex; gap: 15px; flex-wrap: wrap; margin-top: -5px; }
+        .detail-badge { background: var(--bg-input); color: #B0B3B8; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-color); }
+        .detail-btn-group { display: flex; gap: 15px; margin-top: auto; }
+
         .cart-item-img {
             width: 50px;
             height: 50px;
@@ -729,16 +955,16 @@
     </aside>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyDsvE-Bt_rmSsNFlJq5ZktND5JViCsadL0",
+            apiKey: "AIzaSyDsvE-Bt_rmSsNflJq5ZktND5JViCsadL0",
             authDomain: "loja-virtual-f514c.firebaseapp.com",
             projectId: "loja-virtual-f514c",
             storageBucket: "loja-virtual-f514c.firebasestorage.app",
             messagingSenderId: "313055738172",
-            appId: "1:313055738172:web:78ee67f6a07a427a574639"
+            appId: "1:313055738172:web:2c647883e58df6b4574639"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -789,6 +1015,19 @@
 
         let produtosGlobais = [];
         let categoriaAtiva = "Todas";
+        let vendedorAtivo = null;
+
+        window.abrirPerfilVendedor = (id, nome, whatsapp, fotoUrl) => {
+            vendedorAtivo = { id, nome, whatsapp, fotoUrl: fotoUrl || '' };
+            fecharDetalhes();
+            renderizarCategorias();
+            document.getElementById('mainContent').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.fecharPerfilVendedor = () => {
+            vendedorAtivo = null;
+            renderizarCategorias();
+        };
 
         // Estado do Carrinho (Global e Salvo no Navegador)
         let carrinho = JSON.parse(localStorage.getItem('pcm_carrinho')) || [];
@@ -826,6 +1065,46 @@
             `;
                 container.appendChild(div);
             });
+
+            // Adicionar funcionalidade Drag to Scroll
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            let dragged = false; // flag para diferenciar clique de arraste
+
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                dragged = false; // reseta a flag no mousedown
+                container.classList.add('active'); // caso queira usar pra style de ::active css
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
+            container.addEventListener('mouseleave', () => {
+                isDown = false;
+                container.classList.remove('active');
+            });
+            container.addEventListener('mouseup', () => {
+                isDown = false;
+                container.classList.remove('active');
+            });
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                dragged = true; // se moveu o mouse enquanto down, marca como arraste
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 2; // Velocidade do scroll *2
+                container.scrollLeft = scrollLeft - walk;
+            });
+
+            // Previne que o click na categoria dispare se o usuário estava arrastando
+            container.querySelectorAll('.cat-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (dragged) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+            });
         }
 
         // 2. Fetch e Listen Firestore
@@ -847,17 +1126,43 @@
                 return;
             }
 
+            // Cabeçalho Perfil Vendedor
+            if (vendedorAtivo) {
+                const badgeInitial = (vendedorAtivo.nome || 'V').charAt(0).toUpperCase();
+                const avatar = vendedorAtivo.fotoUrl 
+                    ? `<img src="${vendedorAtivo.fotoUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` 
+                    : `<div style="width:100%; height:100%; background:var(--bg-card); color:var(--text-muted); display:flex; justify-content:center; align-items:center; border-radius:50%; font-size:20px; font-weight:bold;">${badgeInitial}</div>`;
+
+                const zapAction = vendedorAtivo.whatsapp ? `onclick="window.open('https://api.whatsapp.com/send?phone=${vendedorAtivo.whatsapp}&text=Olá,%20vim%20pela%20sua%20vitrine%20na%20Masabushi!', '_blank')"` : `onclick="App.UI.msg('Vendedor não informou WhatsApp principal.')"`;
+
+                main.innerHTML = `
+                <div style="background: linear-gradient(135deg, rgba(30,30,35,1) 0%, rgba(20,20,22,1) 100%); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center;">
+                    <div style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent-purple); padding: 2px;">
+                        ${avatar}
+                    </div>
+                    <div>
+                        <h2 style="color: white; font-size: 20px; margin: 0; margin-bottom: 4px;">Anúncios de ${vendedorAtivo.nome}</h2>
+                        <span style="color: var(--text-muted); font-size: 14px;">Todos os produtos disponíveis deste vendedor.</span>
+                    </div>
+                    <div style="display: flex; gap: 10px; width: 100%;">
+                        <button ${zapAction} style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #25D366; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="fa-brands fa-whatsapp"></i> Falar com Vendedor</button>
+                        <button onclick="fecharPerfilVendedor()" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: white; font-weight: bold; cursor: pointer;">Voltar à Loja</button>
+                    </div>
+                </div>
+                `;
+            }
+
             // Agrupar produtos por categoria
             const grouped = {};
             produtosGlobais.forEach(p => {
-                // Filtrar vendidos se preferir não mostrar (opcional, mas comum em lojas mostrar como indisponível)
-                // Aqui vamos mostrar, mas com tag de Esgotado.
+                // Filtro Vendedor Ativo
+                if (vendedorAtivo && p.vendedorId !== vendedorAtivo.id) return;
 
                 // Filtro de busca
                 if (search && !p.nome.toLowerCase().includes(search)) return;
 
                 // Filtro de Categoria do Topo
-                if (categoriaAtiva !== "Todas" && p.categoria !== categoriaAtiva) return;
+                if (!vendedorAtivo && categoriaAtiva !== "Todas" && p.categoria !== categoriaAtiva) return;
 
                 const c = p.categoria || 'Outros';
                 if (!grouped[c]) grouped[c] = [];
@@ -869,7 +1174,7 @@
             const catKeys = Object.keys(grouped).sort();
 
             if (catKeys.length === 0) {
-                main.innerHTML = '<p style="text-align:center; color: #888;">Nenhum produto encontrado.</p>';
+                main.innerHTML += '<p style="text-align:center; color: #888;">Nenhum produto encontrado com estes filtros.</p>';
                 return;
             }
 
@@ -963,18 +1268,24 @@
                     card.innerHTML = `
                     ${p.vendido ? '<div class="badge-esgotado">ESGOTADO</div>' : ''}
                     
-                    ${fotosHtml}
-                    <h3>${p.nome}</h3>
+                    <div class="card-image-container" onclick="abrirDetalhes('${p.id}')" style="cursor:pointer">
+                        ${fotosHtml}
+                    </div>
+                    <h3 onclick="abrirDetalhes('${p.id}')" style="cursor:pointer; margin-bottom: 5px;">${p.nome}</h3>
+                    <div style="font-size: 12px; color: var(--accent-blue); margin-bottom: 10px; display: flex; align-items: center; gap: 5px;">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <span>${p.nomeVendedor || 'Masabushi Store'}</span>
+                    </div>
                     
-                    <div class="descricao">${p.desc || 'Sem descrição detalhada.'}</div>
+                    <div class="descricao" onclick="abrirDetalhes('${p.id}')" style="cursor:pointer">${p.desc || 'Sem descrição detalhada.'}</div>
                     
-                    <div class="preco-container">
+                    <div class="preco-container" onclick="abrirDetalhes('${p.id}')" style="cursor:pointer">
                         ${blocoPrecoHtml}
                     </div>
 
                     <div class="card-actions">
-                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="adicionarAoCarrinho('${p.id}', '${safeName}', ${valorZap}, '${fotos[0] || ''}', '${p.whatsapp || ''}')">Adicionar <i class="fa-solid fa-cart-shopping"></i></button>
-                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="comprarPeloWhatsapp(${callWhatsappArgs})">Comprar <i class="fa-brands fa-whatsapp"></i></button>
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); adicionarAoCarrinho('${p.id}', '${safeName}', ${valorZap}, '${fotos[0] || ''}', '${p.whatsapp || ''}')">Adicionar <i class="fa-solid fa-cart-shopping"></i></button>
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); comprarPeloWhatsapp(${callWhatsappArgs})">Comprar <i class="fa-brands fa-whatsapp"></i></button>
                     </div>
                 `;
                     grid.appendChild(card);
@@ -1019,7 +1330,7 @@
             }
 
             let formatPreco = parseFloat(precoFinal).toFixed(2).replace('.', ',');
-            let mensagem = `Olá, quero comprar o seguinte item:\n\n•${tituloProduto}\n- Valor: R$ ${formatPreco}\n\nTotal: R$ ${formatPreco}`;
+            let mensagem = `Olá, quero comprar o seguinte item:\n\n• ${tituloProduto}\n- Valor: R$ ${formatPreco}\n\nTotal: R$ ${formatPreco}`;
 
             const cleanNumber = numero.replace(/\D/g, '');
             const url = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(mensagem)}`;
@@ -1030,8 +1341,6 @@
         window.finalizarCompra = () => {
             if (carrinho.length === 0) return alert('Seu carrinho está vazio!');
 
-            // Assumimos que a loja tem um número padrão ou pega do primeiro item.
-            // Para segurança num sistema de Multi-Vendedor, vamos enviar para o número do 1o item
             const numeroVenda = carrinho[0].whatsapp;
             if (!numeroVenda) return alert('Número de WhatsApp da Loja não configurado.');
 
@@ -1059,7 +1368,7 @@
         window.deslizarCard = (produtoId, direcao) => {
             const slider = document.getElementById(`slider-${produtoId}`);
             if (!slider) return;
-            const deslizeOffset = slider.clientWidth + 20; // 20px referente ao gap no CSS
+            const deslizeOffset = slider.clientWidth + 20; 
             slider.scrollBy({ left: direcao * deslizeOffset, behavior: 'smooth' });
         };
 
@@ -1073,12 +1382,10 @@
             carrinho.push({ id, nome, valor: Number(valor), fotoUrl, whatsapp });
             salvarCarrinhoBD();
 
-            // Feedback Visual e Abertura
             const badge = document.getElementById('cartBadge');
             badge.style.transform = 'scale(1.5)';
             setTimeout(() => badge.style.transform = 'scale(1)', 300);
 
-            // Abre o carrinho para o usuario ver
             document.getElementById('cartSidebar').classList.add('active');
             document.getElementById('cartOverlay').classList.add('active');
         };
@@ -1106,12 +1413,9 @@
 
             carrinho.forEach((item, index) => {
                 somaTotal += item.valor;
-
                 const div = document.createElement('div');
                 div.className = 'cart-item';
-
                 const fotoHtml = item.fotoUrl ? `<img src="${item.fotoUrl}" class="cart-item-img">` : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;color:#666;"><i class="fa-solid fa-image"></i></div>`;
-
                 div.innerHTML = `
                     ${fotoHtml}
                     <div class="cart-item-info">
@@ -1126,11 +1430,153 @@
             totalElement.innerText = `R$ ${somaTotal.toFixed(2).replace('.', ',')}`;
         }
 
+        // --- SISTEMA DE DETALHES ---
+        let fotosDetalhe = [];
+        let fotoAtualIndex = 0;
+
+        window.abrirDetalhes = (id) => {
+            const p = produtosGlobais.find(item => item.id === id);
+            if (!p) return;
+
+            fotosDetalhe = p.fotos || [];
+            fotoAtualIndex = 0;
+
+            const modal = document.getElementById('detailModal');
+            const info = document.getElementById('detailInfo');
+            
+            let precoHtml = '';
+            if (p.promocao) {
+                const precoPromo = p.valor * (1 - p.percentualDesconto / 100);
+                precoHtml = `<div style="display:flex; flex-direction:column; gap:5px;"><span style="text-decoration:line-through; color:var(--text-muted); font-size:14px;">R$ ${p.valor.toFixed(2).replace('.', ',')}</span><span style="font-size:28px; font-weight:800; color:white;">R$ ${precoPromo.toFixed(2).replace('.', ',')} <span style="color:#4ADE80; font-size:16px;">-${p.percentualDesconto}%</span></span></div>`;
+            } else {
+                precoHtml = `<span style="font-size:28px; font-weight:800; color:white;">R$ ${p.valor.toFixed(2).replace('.', ',')}</span>`;
+            }
+
+            const safeName = p.nome.replace(/'/g, "\\'");
+            const valorZap = p.promocao ? p.valor * (1 - p.percentualDesconto/100) : p.valor;
+            const callWhatsappArgs = `'${p.whatsapp || ''}', '${p.nome}', ${valorZap}`;
+
+            const sellerPhoto = p.fotoVendedor || '';
+            const sellerInitial = (p.nomeVendedor || 'M').charAt(0).toUpperCase();
+            const sellerAvatarHtml = sellerPhoto 
+                ? `<div class="detail-seller-img"><img src="${sellerPhoto}" alt="${p.nomeVendedor}"></div>`
+                : `<div class="detail-seller-img">${sellerInitial}</div>`;
+
+            info.innerHTML = `
+                <h2 class="detail-title">${p.nome}</h2>
+                <div class="detail-seller" onclick="abrirPerfilVendedor('${p.vendedorId || ''}', '${p.nomeVendedor || 'Masabushi Store'}', '${p.whatsapp || ''}', '${sellerPhoto}')">
+                    ${sellerAvatarHtml}
+                    <span>Vendedor: <strong>${p.nomeVendedor || 'Masabushi Store'}</strong></span>
+                </div>
+                
+                <div class="detail-price-box">${precoHtml}</div>
+                
+                <div style="display:flex; flex-direction:column; gap:8px; margin-top:-10px; margin-bottom:10px;">
+                    <div style="color:#888; font-size:13px; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-layer-group" style="color:var(--accent-blue);"></i>
+                        Categoria: <strong style="color:white;">${p.categoria || 'Geral'}</strong>
+                    </div>
+                    <div style="color:#888; font-size:13px; display:flex; align-items:center; gap:6px;">
+                        ${p.vendido 
+                            ? '<i class="fa-solid fa-circle-xmark" style="color:#FF4B4B;"></i> Status: <strong style="color:white;">Indisponível</strong>' 
+                            : '<i class="fa-solid fa-check-circle" style="color:#4ADE80;"></i> Status: <strong style="color:white;">Disponível</strong>'}
+                    </div>
+                </div>
+
+                <div class="detail-desc">${p.desc || 'Sem descrição detalhada.'}</div>
+                <div class="detail-btn-group">
+                    <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="adicionarAoCarrinho('${p.id}', '${safeName}', ${valorZap}, '${p.fotos ? p.fotos[0] : ''}', '${p.whatsapp || ''}')">Adicionar ao Carrinho</button>
+                    <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="comprarPeloWhatsapp(${callWhatsappArgs})">Comprar Agora</button>
+                </div>
+            `;
+            renderizarFotoDetalhe();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.fecharDetalhes = () => {
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        function renderizarFotoDetalhe() {
+            const media = document.getElementById('detailMedia');
+            if (!fotosDetalhe || fotosDetalhe.length === 0) {
+                media.innerHTML = '<div style="color:#444;"><i class="fa-solid fa-image fa-4x"></i></div>';
+                return;
+            }
+            const fotoUrl = fotosDetalhe[fotoAtualIndex];
+            media.innerHTML = `
+                <div class="zoom-container" id="zoomContainer"><img src="${fotoUrl}" class="zoom-img" id="zoomImg"></div>
+                ${fotosDetalhe.length > 1 ? `
+                    <button class="detail-nav-btn detail-prev" onclick="mudarFotoDetalhe(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="detail-nav-btn detail-next" onclick="mudarFotoDetalhe(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    <div class="detail-carousel-controls">
+                        ${fotosDetalhe.map((_, i) => `<div class="detail-dot ${i === fotoAtualIndex ? 'active' : ''}" onclick="fotoAtualIndex = ${i}; renderizarFotoDetalhe();"></div>`).join('')}
+                    </div>` : ''}`;
+            setupZoom();
+        }
+
+        window.mudarFotoDetalhe = (dir) => {
+            fotoAtualIndex += dir;
+            if (fotoAtualIndex < 0) fotoAtualIndex = fotosDetalhe.length - 1;
+            if (fotoAtualIndex >= fotosDetalhe.length) fotoAtualIndex = 0;
+            renderizarFotoDetalhe();
+        };
+
+        function setupZoom() {
+            const container = document.getElementById('zoomContainer');
+            const img = document.getElementById('zoomImg');
+            if (!container || !img) return;
+
+            let isZoomed = false;
+
+            container.addEventListener('click', () => {
+                isZoomed = !isZoomed;
+                if (!isZoomed) {
+                    img.style.transform = 'scale(1)';
+                    container.style.cursor = 'zoom-in';
+                } else {
+                    container.style.cursor = 'zoom-out';
+                    // Dispara um movimento fake para posicionar onde o mouse já está
+                    const event = new MouseEvent('mousemove', { bubbles: true, cancelable: true });
+                    // No click não temos PageX fácil como no listener, mas o mousemove seguinte resolve
+                    img.style.transform = 'scale(2.5)';
+                }
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isZoomed) return;
+                const { left, top, width, height } = container.getBoundingClientRect();
+                const x = ((e.pageX - left - window.scrollX) / width) * 100;
+                const y = ((e.pageY - top - window.scrollY) / height) * 100;
+                img.style.transformOrigin = `${x}% ${y}%`;
+                img.style.transform = 'scale(2.5)';
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isZoomed = false;
+                img.style.transform = 'scale(1)';
+                img.style.transformOrigin = 'center center';
+                container.style.cursor = 'zoom-in';
+            });
+        }
+
         // INIT
         renderCategoriesBar();
         renderizarCarrinho();
-
     </script>
-</body>
 
-</html>
+    <!-- MODAL DE DETALHES DO PRODUTO -->
+    <div id="detailModal" class="detail-modal" onclick="if(event.target === this) fecharDetalhes()">
+        <div class="detail-content">
+            <button class="close-detail" onclick="fecharDetalhes()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="detail-body">
+                <div class="detail-media" id="detailMedia"></div>
+                <div class="detail-info" id="detailInfo"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
