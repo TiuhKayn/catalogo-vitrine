@@ -908,8 +908,8 @@
         </div>
     </header>
 
-    <div class="categories-container" id="catContainer">
-        <!-- Ícones de categoria gerados via JS -->
+    <div id="dynamicCatContainer">
+        <!-- Ícones de categoria injetados dinamicamente via JS -->
     </div>
 
     <main id="mainContent">
@@ -1046,15 +1046,16 @@
         };
 
         // 1. Renderizar barra de categorias
-        function renderCategoriesBar() {
-            const container = document.getElementById('catContainer');
-            container.innerHTML = '';
+        function renderCategoriesBar(containerId = 'dynamicCatContainer') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.className = 'categories-container';
             categorias.forEach(cat => {
                 const div = document.createElement('div');
                 div.className = `cat-item ${categoriaAtiva === cat.nome ? 'active' : ''}`;
                 div.onclick = () => {
                     categoriaAtiva = cat.nome;
-                    renderCategoriesBar();
                     renderizarCategorias();
                 };
                 const isSvg = cat.icon.startsWith('<svg');
@@ -1118,7 +1119,9 @@
         // 3. Renderizar seções e grid
         window.renderizarCategorias = () => {
             const main = document.getElementById('mainContent');
-            const search = document.getElementById('searchInput').value.toLowerCase();
+            const globalSearch = document.getElementById('searchInput').value.toLowerCase();
+            const localSearch = document.getElementById('vendedorSearchInput') ? document.getElementById('vendedorSearchInput').value.toLowerCase() : "";
+            const search = localSearch || globalSearch;
             main.innerHTML = '';
 
             if (produtosGlobais.length === 0) {
@@ -1148,8 +1151,19 @@
                         <button ${zapAction} style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #25D366; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="fa-brands fa-whatsapp"></i> Falar com Vendedor</button>
                         <button onclick="fecharPerfilVendedor()" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: white; font-weight: bold; cursor: pointer;">Voltar à Loja</button>
                     </div>
+                    
+                    <div class="search-container" style="margin-top: 10px; width: 100%;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="vendedorSearchInput" placeholder="Pesquisar nos itens deste vendedor..." onkeyup="renderizarCategorias()">
+                    </div>
+
+                    <div id="vendedorCatContainer"></div>
                 </div>
                 `;
+                renderCategoriesBar('vendedorCatContainer');
+            } else {
+                // Se não for perfil de vendedor, renderiza no container fixo do topo
+                renderCategoriesBar('dynamicCatContainer');
             }
 
             // Agrupar produtos por categoria
