@@ -902,7 +902,7 @@
                 <span class="cart-badge" id="cartBadge">0</span>
             </button>
         </div>
-        <div class="search-container">
+        <div class="search-container" id="headerSearchContainer">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" id="searchInput" placeholder="Buscar produtos..." onkeyup="renderizarCategorias()">
         </div>
@@ -1020,12 +1020,16 @@
         window.abrirPerfilVendedor = (id, nome, whatsapp, fotoUrl) => {
             vendedorAtivo = { id, nome, whatsapp, fotoUrl: fotoUrl || '' };
             fecharDetalhes();
+            const main = document.getElementById('mainContent');
+            if (main) main.innerHTML = ''; // Limpa a tabela para forçar recriação do profile header
             renderizarCategorias();
             document.getElementById('mainContent').scrollIntoView({ behavior: 'smooth' });
         };
 
         window.fecharPerfilVendedor = () => {
             vendedorAtivo = null;
+            const main = document.getElementById('mainContent');
+            if (main) main.innerHTML = ''; // Limpa o perfil
             renderizarCategorias();
         };
 
@@ -1051,11 +1055,13 @@
             if (!container) return;
             
             container.className = 'categories-container';
+            container.innerHTML = ''; // Limpa o container para evitar que as categorias se multipliquem infinitamente
             categorias.forEach(cat => {
                 const div = document.createElement('div');
                 div.className = `cat-item ${categoriaAtiva === cat.nome ? 'active' : ''}`;
                 div.onclick = () => {
                     categoriaAtiva = cat.nome;
+                    renderCategoriesBar(containerId); // Re-renderiza a barra para atualizar a classe .active
                     renderizarCategorias();
                 };
                 const isSvg = cat.icon.startsWith('<svg');
@@ -1122,49 +1128,88 @@
             const globalSearch = document.getElementById('searchInput').value.toLowerCase();
             const localSearch = document.getElementById('vendedorSearchInput') ? document.getElementById('vendedorSearchInput').value.toLowerCase() : "";
             const search = localSearch || globalSearch;
-            main.innerHTML = '';
 
             if (produtosGlobais.length === 0) {
                 main.innerHTML = '<p style="text-align:center; color: #888;">Carregando produtos ou nenhum disponível...</p>';
                 return;
             }
 
+            const headerSearch = document.getElementById('headerSearchContainer');
+            const dynamicCat = document.getElementById('dynamicCatContainer');
+
+            // Criar container exclusivo para a vitrine de produtos, separado do cabeçalho
+            let gridContainer = document.getElementById('vitrineProdutosContainer');
+            if (!gridContainer) {
+                gridContainer = document.createElement('div');
+                gridContainer.id = 'vitrineProdutosContainer';
+            }
+
             // Cabeçalho Perfil Vendedor
             if (vendedorAtivo) {
-                const badgeInitial = (vendedorAtivo.nome || 'V').charAt(0).toUpperCase();
-                const avatar = vendedorAtivo.fotoUrl 
-                    ? `<img src="${vendedorAtivo.fotoUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` 
-                    : `<div style="width:100%; height:100%; background:var(--bg-card); color:var(--text-muted); display:flex; justify-content:center; align-items:center; border-radius:50%; font-size:20px; font-weight:bold;">${badgeInitial}</div>`;
+                if(headerSearch) headerSearch.style.display = 'none';
+                if(dynamicCat) dynamicCat.style.display = 'none';
 
-                const zapAction = vendedorAtivo.whatsapp ? `onclick="window.open('https://api.whatsapp.com/send?phone=${vendedorAtivo.whatsapp}&text=Olá,%20vim%20pela%20sua%20vitrine%20na%20Masabushi!', '_blank')"` : `onclick="App.UI.msg('Vendedor não informou WhatsApp principal.')"`;
-
-                main.innerHTML = `
-                <div style="background: linear-gradient(135deg, rgba(30,30,35,1) 0%, rgba(20,20,22,1) 100%); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center;">
-                    <div style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent-purple); padding: 2px;">
-                        ${avatar}
-                    </div>
-                    <div>
-                        <h2 style="color: white; font-size: 20px; margin: 0; margin-bottom: 4px;">Anúncios de ${vendedorAtivo.nome}</h2>
-                        <span style="color: var(--text-muted); font-size: 14px;">Todos os produtos disponíveis deste vendedor.</span>
-                    </div>
-                    <div style="display: flex; gap: 10px; width: 100%;">
-                        <button ${zapAction} style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #25D366; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="fa-brands fa-whatsapp"></i> Falar com Vendedor</button>
-                        <button onclick="fecharPerfilVendedor()" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: white; font-weight: bold; cursor: pointer;">Voltar à Loja</button>
-                    </div>
+                // Só recria o cabeçalho se ele ainda não estiver lá
+                let profileHeader = document.getElementById('vendedorProfileHeader');
+                if(!profileHeader) {
+                    main.innerHTML = ''; // Limpa a loja inteira antes de injetar o perfil
                     
-                    <div class="search-container" style="margin-top: 10px; width: 100%;">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="vendedorSearchInput" placeholder="Pesquisar nos itens deste vendedor..." onkeyup="renderizarCategorias()">
-                    </div>
+                    const badgeInitial = (vendedorAtivo.nome || 'V').charAt(0).toUpperCase();
+                    const avatar = vendedorAtivo.fotoUrl 
+                        ? `<img src="${vendedorAtivo.fotoUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` 
+                        : `<div style="width:100%; height:100%; background:var(--bg-card); color:var(--text-muted); display:flex; justify-content:center; align-items:center; border-radius:50%; font-size:20px; font-weight:bold;">${badgeInitial}</div>`;
 
-                    <div id="vendedorCatContainer"></div>
-                </div>
-                `;
-                renderCategoriesBar('vendedorCatContainer');
+                    const zapAction = vendedorAtivo.whatsapp ? `onclick="window.open('https://api.whatsapp.com/send?phone=${vendedorAtivo.whatsapp}&text=Olá,%20vim%20pela%20sua%20vitrine%20na%20Masabushi!', '_blank')"` : `onclick="App.UI.msg('Vendedor não informou WhatsApp principal.')"`;
+
+                    profileHeader = document.createElement('div');
+                    profileHeader.id = 'vendedorProfileHeader';
+                    profileHeader.innerHTML = `
+                    <div style="background: linear-gradient(135deg, rgba(30,30,35,1) 0%, rgba(20,20,22,1) 100%); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center;">
+                        <div style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent-purple); padding: 2px;">
+                            ${avatar}
+                        </div>
+                        <div>
+                            <h2 style="color: white; font-size: 20px; margin: 0; margin-bottom: 4px;">Anúncios de ${vendedorAtivo.nome}</h2>
+                            <span style="color: var(--text-muted); font-size: 14px;">Todos os produtos disponíveis deste vendedor.</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; width: 100%;">
+                            <button ${zapAction} style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #25D366; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="fa-brands fa-whatsapp"></i> Falar com Vendedor</button>
+                            <button onclick="fecharPerfilVendedor()" style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: white; font-weight: bold; cursor: pointer;">Voltar à Loja</button>
+                        </div>
+                        
+                        <div id="vendedorCatContainer" style="width: 100%; margin-top: 5px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);"></div>
+
+                        <div class="search-container" style="margin-top: 10px; width: 100%;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="vendedorSearchInput" placeholder="Pesquisar nos itens deste vendedor..." onkeyup="
+                                // Delay para evitar engasgos, mas filtra direto
+                                const term = this.value.toLowerCase();
+                                const searchField = document.getElementById('searchInput'); // O global fakea o local
+                                if(searchField) searchField.value = term;
+                                renderizarCategorias();
+                                document.getElementById('vendedorSearchInput').focus();
+                            " value="${localSearch}">
+                        </div>
+                    </div>
+                    `;
+                    main.appendChild(profileHeader);
+                    renderCategoriesBar('vendedorCatContainer');
+                }
+                
+                // Anexa o container de grade após o cabeçalho (ou mantém se já estiver)
+                main.appendChild(gridContainer);
             } else {
+                if(headerSearch) headerSearch.style.display = 'block';
+                if(dynamicCat) dynamicCat.style.display = 'flex';
+                
+                main.innerHTML = ''; // Se não for vendedor, pode limpar o root
+                main.appendChild(gridContainer);
                 // Se não for perfil de vendedor, renderiza no container fixo do topo
                 renderCategoriesBar('dynamicCatContainer');
             }
+
+            // A partir daqui, injetamos tudo apenas no gridContainer
+            gridContainer.innerHTML = '';
 
             // Agrupar produtos por categoria
             const grouped = {};
@@ -1175,8 +1220,8 @@
                 // Filtro de busca
                 if (search && !p.nome.toLowerCase().includes(search)) return;
 
-                // Filtro de Categoria do Topo
-                if (!vendedorAtivo && categoriaAtiva !== "Todas" && p.categoria !== categoriaAtiva) return;
+                // Filtro de Categoria
+                if (categoriaAtiva !== "Todas" && p.categoria !== categoriaAtiva) return;
 
                 const c = p.categoria || 'Outros';
                 if (!grouped[c]) grouped[c] = [];
@@ -1188,7 +1233,11 @@
             const catKeys = Object.keys(grouped).sort();
 
             if (catKeys.length === 0) {
-                main.innerHTML += '<p style="text-align:center; color: #888;">Nenhum produto encontrado com estes filtros.</p>';
+                const emptyMsg = document.createElement('p');
+                emptyMsg.style.textAlign = 'center';
+                emptyMsg.style.color = '#888';
+                emptyMsg.innerText = 'Nenhum produto encontrado com estes filtros.';
+                gridContainer.appendChild(emptyMsg);
                 return;
             }
 
@@ -1308,7 +1357,7 @@
                 section.appendChild(grid);
                 fragment.appendChild(section);
             });
-            main.appendChild(fragment);
+            gridContainer.appendChild(fragment);
         };
 
         // 4. Timer Global Live
