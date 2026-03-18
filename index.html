@@ -884,6 +884,64 @@
             background-color: #4B5563;
             cursor: not-allowed;
         }
+
+        /* RESPONSIVIDADE MOBILE (Loja do Cliente) */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+            }
+
+            .header-top {
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 20px;
+                /* Remove o texto PCManaus em telas mt pequenas e deixa só ícone, ou diminui a fonte */
+            }
+
+            main {
+                padding: 15px;
+            }
+
+            .grid-produtos {
+                /* Permitir grids de até 150px para caber 2 em telas HD ou 1 nas mais finas */
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+
+            .card-content h3 {
+                font-size: 14px;
+            }
+
+            .card-content .preco {
+                font-size: 18px;
+            }
+
+            .cart-sidebar {
+                width: 90%; /* Cobrir quase toda a tela no mobile */
+                max-width: none;
+            }
+
+            .categories-container {
+                padding: 10px 15px;
+                gap: 10px;
+            }
+
+            .cat-item {
+                min-width: 60px;
+            }
+
+            .cat-icon {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .nav-sidebar {
+                width: 80%;
+            }
+        }
     </style>
 </head>
 
