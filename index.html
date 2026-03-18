@@ -892,23 +892,28 @@
             }
 
             .header-top {
-                justify-content: space-between;
-                gap: 10px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
             }
 
             .logo {
                 font-size: 20px;
-                /* Remove o texto PCManaus em telas mt pequenas e deixa só ícone, ou diminui a fonte */
+                flex: 1;
             }
 
             main {
-                padding: 15px;
+                padding: 15px 5px; /* Reduz padding lateral para dar mais espaço aos cards */
             }
 
             .grid-produtos {
-                /* Permitir grids de até 150px para caber 2 em telas HD ou 1 nas mais finas */
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 15px;
+                /* Força explicitamente 2 colunas em dispositivos móveis */
+                grid-template-columns: 1fr 1fr;
+                gap: 8px; /* Menor gap para caber tudo bem apertado */
+            }
+
+            .card {
+                padding: 10px; /* Reduz padding interno do card na tela menor */
             }
 
             .card-content h3 {
@@ -925,12 +930,18 @@
             }
 
             .categories-container {
-                padding: 10px 15px;
-                gap: 10px;
+                padding: 10px 5px;
+                gap: 15px;
             }
 
             .cat-item {
-                min-width: 60px;
+                min-width: 75px;
+                flex-shrink: 0;
+            }
+
+            .cat-item span {
+                white-space: nowrap;
+                font-size: 11px;
             }
 
             .cat-icon {
@@ -1352,8 +1363,8 @@
 
                         if (fotos.length > 1) {
                             fotosHtml += `
-                                <button class="slide-arrow slide-prev" onclick="deslizarCard('${p.id}', -1)"><i class="fa-solid fa-chevron-left"></i></button>
-                                <button class="slide-arrow slide-next" onclick="deslizarCard('${p.id}', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+                                <button class="slide-arrow slide-prev" onclick="event.stopPropagation(); deslizarCard('${p.id}', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button class="slide-arrow slide-next" onclick="event.stopPropagation(); deslizarCard('${p.id}', 1)"><i class="fa-solid fa-chevron-right"></i></button>
                             `;
                         }
 
@@ -1404,9 +1415,9 @@
                         ${blocoPrecoHtml}
                     </div>
 
-                    <div class="card-actions">
-                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); adicionarAoCarrinho('${p.id}', '${safeName}', ${valorZap}, '${fotos[0] || ''}', '${p.whatsapp || ''}')">Adicionar <i class="fa-solid fa-cart-shopping"></i></button>
-                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" style="flex:1" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); comprarPeloWhatsapp(${callWhatsappArgs})">Comprar <i class="fa-brands fa-whatsapp"></i></button>
+                    <div class="card-actions" style="display:flex; gap:5px; margin-top: auto; overflow:hidden;">
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" style="flex:1; padding:8px 2px; font-size:11px; min-width:0; white-space:nowrap; text-align:center;" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); adicionarAoCarrinho('${p.id}', '${safeName}', ${valorZap}, '${fotos[0] || ''}', '${p.whatsapp || ''}')">Add <i class="fa-solid fa-cart-shopping"></i></button>
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" style="flex:1; padding:8px 2px; font-size:11px; min-width:0; white-space:nowrap; text-align:center;" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); comprarPeloWhatsapp(${callWhatsappArgs})">Comprar <i class="fa-brands fa-whatsapp"></i></button>
                     </div>
                 `;
                     grid.appendChild(card);
