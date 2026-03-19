@@ -897,6 +897,11 @@
                 gap: 15px;
             }
 
+            .menu-btn {
+                position: relative;
+                left: auto;
+            }
+
             .logo {
                 font-size: 20px;
                 flex: 1;
@@ -1416,7 +1421,7 @@
                     </div>
 
                     <div class="card-actions" style="display:flex; gap:5px; margin-top: auto; overflow:hidden;">
-                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" style="flex:1; padding:8px 2px; font-size:11px; min-width:0; white-space:nowrap; text-align:center;" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); adicionarAoCarrinho('${p.id}', '${safeName}', ${valorZap}, '${fotos[0] || ''}', '${p.whatsapp || ''}')">Add <i class="fa-solid fa-cart-shopping"></i></button>
+                        <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-add'}" style="flex:1; padding:8px 2px; font-size:11px; min-width:0; white-space:nowrap; text-align:center;" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); adicionarAoCarrinho('${p.id}', '${safeName}', ${valorZap}, '${fotos[0] || ''}', '${p.whatsapp || ''}')">Adicionar <i class="fa-solid fa-cart-shopping"></i></button>
                         <button class="btn ${p.vendido ? 'btn-disabled' : 'btn-buy'}" style="flex:1; padding:8px 2px; font-size:11px; min-width:0; white-space:nowrap; text-align:center;" ${p.vendido ? 'disabled' : ''} onclick="event.stopPropagation(); comprarPeloWhatsapp(${callWhatsappArgs})">Comprar <i class="fa-brands fa-whatsapp"></i></button>
                     </div>
                 `;
