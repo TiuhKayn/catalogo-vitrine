@@ -1051,6 +1051,14 @@
     <div id="dynamicCatContainer">
         <!-- Ícones de categoria injetados dinamicamente via JS -->
     </div>
+    <div id="globalFilterControls" style="padding: 0 30px 10px; display: flex; justify-content: flex-end;">
+        <select onchange="window.mudarOrdem(this.value)" style="background: var(--bg-input); color: white; border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; outline: none; font-size: 14px; cursor: pointer;">
+            <option value="recentes">Padrão (Mais Recentes)</option>
+            <option value="alfabetica">Ordem Alfabética (A-Z)</option>
+            <option value="menor_preco">Menor Preço</option>
+            <option value="maior_preco">Maior Preço</option>
+        </select>
+    </div>
 
     <main id="mainContent">
         <!-- Seções de categorias geradas via JS -->
@@ -1133,7 +1141,6 @@
         };
 
         const categorias = [
-            { nome: "Todas", icon: "fa-border-all" },
             { nome: "Controle", icon: "fa-gamepad" },
             { nome: "Resfriadores", icon: "fa-fan" },
             { nome: "Teclado", icon: "fa-keyboard" },
@@ -1151,11 +1158,24 @@
             { nome: "Controladora", icon: "fa-sliders" },
             { nome: "Kit", icon: `<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="18" rx="1" opacity="0.4"></rect><rect x="18" y="4" width="4" height="16" rx="1"></rect><line x1="18" y1="8" x2="22" y2="8"></line><line x1="18" y1="16" x2="22" y2="16"></line><rect x="4" y="8" width="8" height="8" rx="1"></rect><circle cx="8" cy="12" r="1"></circle></svg>` },
             { nome: "Outros", icon: "fa-ellipsis" }
-        ];
+        ].sort((a, b) => a.nome.localeCompare(b.nome));
+
+        categorias.unshift({ nome: "Todas", icon: "fa-border-all" });
 
         let produtosGlobais = [];
         let categoriaAtiva = "Todas";
         let vendedorAtivo = null;
+        window.ordemFixa = 'recentes'; // Nova Lógica de Ordenação
+
+        window.mudarOrdem = (novaOrdem) => {
+            window.ordemFixa = novaOrdem;
+            
+            // Re-sincronizar ambos os selects para estarem espelhados se existirem
+            document.querySelectorAll('select[onchange="window.mudarOrdem(this.value)"]').forEach(el => {
+                el.value = novaOrdem;
+            });
+            renderizarCategorias();
+        };
 
         window.abrirPerfilVendedor = (id, nome, whatsapp, fotoUrl) => {
             vendedorAtivo = { id, nome, whatsapp, fotoUrl: fotoUrl || '' };
@@ -1257,13 +1277,30 @@
         // 2. Fetch e Listen Firestore
         onSnapshot(collection(db, "produtos"), (snapshot) => {
             produtosGlobais = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            // Ordenar novidades primeiro
-            produtosGlobais.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
             renderizarCategorias();
         });
 
         // 3. Renderizar seções e grid
         window.renderizarCategorias = () => {
+            // ----- APLICADOR DE ORDENAÇÃO -----
+            if (window.ordemFixa === 'alfabetica') {
+                produtosGlobais.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
+            } else if (window.ordemFixa === 'menor_preco') {
+                produtosGlobais.sort((a, b) => {
+                    const precoA = a.promocao && a.percentualDesconto ? a.valor - (a.valor * (a.percentualDesconto / 100)) : a.valor;
+                    const precoB = b.promocao && b.percentualDesconto ? b.valor - (b.valor * (b.percentualDesconto / 100)) : b.valor;
+                    return precoA - precoB;
+                });
+            } else if (window.ordemFixa === 'maior_preco') {
+                produtosGlobais.sort((a, b) => {
+                    const precoA = a.promocao && a.percentualDesconto ? a.valor - (a.valor * (a.percentualDesconto / 100)) : a.valor;
+                    const precoB = b.promocao && b.percentualDesconto ? b.valor - (b.valor * (b.percentualDesconto / 100)) : b.valor;
+                    return precoB - precoA;
+                });
+            } else { // 'recentes'
+                produtosGlobais.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
+            }
+
             const main = document.getElementById('mainContent');
             const globalSearch = document.getElementById('searchInput').value.toLowerCase();
             const localSearch = document.getElementById('vendedorSearchInput') ? document.getElementById('vendedorSearchInput').value.toLowerCase() : "";
@@ -1284,10 +1321,13 @@
                 gridContainer.id = 'vitrineProdutosContainer';
             }
 
+            const filterControls = document.getElementById('globalFilterControls');
+
             // Cabeçalho Perfil Vendedor
             if (vendedorAtivo) {
                 if(headerSearch) headerSearch.style.display = 'none';
                 if(dynamicCat) dynamicCat.style.display = 'none';
+                if(filterControls) filterControls.style.display = 'none';
 
                 // Só recria o cabeçalho se ele ainda não estiver lá
                 let profileHeader = document.getElementById('vendedorProfileHeader');
@@ -1319,6 +1359,15 @@
                         
                         <div id="vendedorCatContainer" style="width: 100%; margin-top: 5px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);"></div>
 
+                        <div style="width: 100%; display: flex; justify-content: flex-end; margin-top: 10px;">
+                            <select onchange="window.mudarOrdem(this.value)" style="background: var(--bg-input); color: white; border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; outline: none; font-size: 14px; cursor: pointer;">
+                                <option value="recentes" ${window.ordemFixa === 'recentes' ? 'selected' : ''}>Padrão (Mais Recentes)</option>
+                                <option value="alfabetica" ${window.ordemFixa === 'alfabetica' ? 'selected' : ''}>Ordem Alfabética (A-Z)</option>
+                                <option value="menor_preco" ${window.ordemFixa === 'menor_preco' ? 'selected' : ''}>Menor Preço</option>
+                                <option value="maior_preco" ${window.ordemFixa === 'maior_preco' ? 'selected' : ''}>Maior Preço</option>
+                            </select>
+                        </div>
+
                         <div class="search-container" style="margin-top: 10px; width: 100%;">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="vendedorSearchInput" placeholder="Pesquisar nos itens deste vendedor..." onkeyup="
@@ -1341,6 +1390,7 @@
             } else {
                 if(headerSearch) headerSearch.style.display = 'block';
                 if(dynamicCat) dynamicCat.style.display = 'flex';
+                if(filterControls) filterControls.style.display = 'flex';
                 
                 main.innerHTML = ''; // Se não for vendedor, pode limpar o root
                 main.appendChild(gridContainer);
