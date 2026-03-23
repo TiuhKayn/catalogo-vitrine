@@ -1159,7 +1159,11 @@
             { nome: "Controladora", icon: "fa-sliders" },
             { nome: "Kit", icon: `<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="18" rx="1" opacity="0.4"></rect><rect x="18" y="4" width="4" height="16" rx="1"></rect><line x1="18" y1="8" x2="22" y2="8"></line><line x1="18" y1="16" x2="22" y2="16"></line><rect x="4" y="8" width="8" height="8" rx="1"></rect><circle cx="8" cy="12" r="1"></circle></svg>` },
             { nome: "Outros", icon: "fa-ellipsis" }
-        ].sort((a, b) => a.nome.localeCompare(b.nome));
+        ].sort((a, b) => {
+            if (a.nome === "Outros") return 1;
+            if (b.nome === "Outros") return -1;
+            return a.nome.localeCompare(b.nome);
+        });
 
         categorias.unshift({ nome: "Todas", icon: "fa-border-all" });
 
@@ -1284,23 +1288,26 @@
         // 3. Renderizar seções e grid
         window.renderizarCategorias = () => {
             // ----- APLICADOR DE ORDENAÇÃO -----
-            if (window.ordemFixa === 'alfabetica') {
-                produtosGlobais.sort((a, b) => (a.nome || "").localeCompare(b.nome || ""));
-            } else if (window.ordemFixa === 'menor_preco') {
-                produtosGlobais.sort((a, b) => {
+            produtosGlobais.sort((a, b) => {
+                // Items vendidos sempre vão para o final
+                const aVendido = a.vendido ? 1 : 0;
+                const bVendido = b.vendido ? 1 : 0;
+                if (aVendido !== bVendido) return aVendido - bVendido;
+
+                if (window.ordemFixa === 'alfabetica') {
+                    return (a.nome || "").localeCompare(b.nome || "");
+                } else if (window.ordemFixa === 'menor_preco') {
                     const precoA = a.promocao && a.percentualDesconto ? a.valor - (a.valor * (a.percentualDesconto / 100)) : a.valor;
                     const precoB = b.promocao && b.percentualDesconto ? b.valor - (b.valor * (b.percentualDesconto / 100)) : b.valor;
                     return precoA - precoB;
-                });
-            } else if (window.ordemFixa === 'maior_preco') {
-                produtosGlobais.sort((a, b) => {
+                } else if (window.ordemFixa === 'maior_preco') {
                     const precoA = a.promocao && a.percentualDesconto ? a.valor - (a.valor * (a.percentualDesconto / 100)) : a.valor;
                     const precoB = b.promocao && b.percentualDesconto ? b.valor - (b.valor * (b.percentualDesconto / 100)) : b.valor;
                     return precoB - precoA;
-                });
-            } else { // 'recentes'
-                produtosGlobais.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
-            }
+                } else { // 'recentes'
+                    return new Date(b.data || 0) - new Date(a.data || 0);
+                }
+            });
 
             const main = document.getElementById('mainContent');
             const globalSearch = document.getElementById('searchInput').value.toLowerCase();
