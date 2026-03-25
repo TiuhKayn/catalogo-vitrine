@@ -30,7 +30,8 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Trava o zoom lateral */
+            width: 100%;
         }
 
         /* HEADER */
@@ -213,6 +214,12 @@
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 8px;
             display: inline-block;
+        }
+
+        .filter-controls {
+            padding: 0 30px 10px;
+            display: flex;
+            justify-content: flex-end;
         }
 
         .grid-produtos {
@@ -952,7 +959,7 @@
 
             .detail-media {
                 min-height: 250px;
-                max-height: 300px; /* Impede a imagem de tomar a tela inteira */
+                max-height: none;
                 flex: none;
                 width: 100%;
             }
@@ -996,8 +1003,16 @@
                 max-width: none;
             }
 
+            .section-title {
+                margin: 10px 0 10px; /* Reduz o vão no mobile */
+            }
+
+            .filter-controls {
+                padding: 0 15px 5px; /* Reduz o vão do seletor no mobile */
+            }
+
             .categories-container {
-                padding: 10px 5px;
+                padding: 5px 5px; /* Reduz o vão das categorias no mobile */
                 gap: 15px;
             }
 
@@ -1051,7 +1066,7 @@
     <div id="dynamicCatContainer">
         <!-- Ícones de categoria injetados dinamicamente via JS -->
     </div>
-    <div id="globalFilterControls" style="padding: 0 30px 10px; display: flex; justify-content: flex-end;">
+    <div id="globalFilterControls" class="filter-controls">
         <select onchange="window.mudarOrdem(this.value)" style="background: var(--bg-input); color: white; border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; outline: none; font-size: 14px; cursor: pointer;">
             <option value="recentes">Padrão (Mais Recentes)</option>
             <option value="alfabetica">Ordem Alfabética (A-Z)</option>
