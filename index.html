@@ -1501,9 +1501,10 @@
                         for (let i = 0; i < fotos.length; i++) {
                             fotosHtml += `
                                 <div class="img-container">
-                                    <img src="${fotos[i]}" loading="lazy" style="position: absolute; top: -20px; left: -20px; width: calc(100% + 40px); height: calc(100% + 40px); object-fit: cover; filter: blur(15px); z-index: 0;">
+                                    <img src="${fotos[i]}" loading="lazy" onerror="this.style.display='none'" style="position: absolute; top: -20px; left: -20px; width: calc(100% + 40px); height: calc(100% + 40px); object-fit: cover; filter: blur(15px); z-index: 0;">
                                     <div style="position: absolute; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 1;"></div>
-                                    <img src="${fotos[i]}" alt="Foto ${i + 1}" loading="lazy" style="position: relative; z-index: 2; border-radius: inherit;">
+                                    <i class="fa-solid fa-image-slash" style="position:absolute; z-index:1; font-size: 30px; color:#555;"></i>
+                                    <img src="${fotos[i]}" alt="Foto ${i + 1}" loading="lazy" onerror="this.style.display='none'" style="position: relative; z-index: 2; border-radius: inherit;">
                                 </div>
                             `;
                         }
@@ -1769,7 +1770,10 @@
             }
             const fotoUrl = fotosDetalhe[fotoAtualIndex];
             media.innerHTML = `
-                <div class="zoom-container" id="zoomContainer"><img src="${fotoUrl}" class="zoom-img" id="zoomImg"></div>
+                <div class="zoom-container" id="zoomContainer" style="display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;">
+                    <i class="fa-solid fa-image-slash" style="position:absolute; font-size: 60px; color:#555; z-index:0;"></i>
+                    <img src="${fotoUrl}" class="zoom-img" id="zoomImg" onerror="this.style.display='none'" style="position:relative; z-index:1;">
+                </div>
                 ${fotosDetalhe.length > 1 ? `
                     <button class="detail-nav-btn detail-prev" onclick="mudarFotoDetalhe(-1)"><i class="fa-solid fa-chevron-left"></i></button>
                     <button class="detail-nav-btn detail-next" onclick="mudarFotoDetalhe(1)"><i class="fa-solid fa-chevron-right"></i></button>
