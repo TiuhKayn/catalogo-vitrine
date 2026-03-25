@@ -953,35 +953,49 @@
             }
 
             .detail-modal {
-                padding: 10px; /* Mais espaço para o modal no celular */
-                box-sizing: border-box; /* Garantia no mobile também */
+                padding: 0; /* Modal tela cheia no mobile */
             }
 
             .detail-content {
-                max-height: 95vh;
+                width: 100%;
+                height: 100%;
+                max-height: 100vh;
+                border-radius: 0;
             }
 
             .detail-body {
                 flex-direction: column;
+                height: 100%;
             }
 
             .detail-media {
-                min-height: 250px;
+                min-height: auto;
                 max-height: none;
                 flex: none;
                 width: 100%;
             }
 
             .detail-info {
-                padding: 20px; /* Padding um pouco menor no info */
+                padding: 25px; /* Mais espaço interno no mobile */
+            }
+
+            .detail-info h2 {
+                font-size: 24px; /* Título bem visível */
+            }
+
+            .detail-info .preco-atual {
+                font-size: 32px; /* Preço bem destacado */
             }
 
             .close-detail {
-                top: 10px;
-                right: 10px;
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+                font-size: 22px;
+                background: rgba(0,0,0,0.5); /* Fundo para não sumir na foto */
+                border-radius: 50%;
+                z-index: 100;
             }
 
             main {
@@ -1007,7 +1021,7 @@
             }
 
             .cart-sidebar {
-                width: 90%; /* Cobrir quase toda a tela no mobile */
+                width: 100%; /* Totalmente tela cheia */
                 max-width: none;
             }
 
@@ -1791,16 +1805,18 @@
                 return;
             }
             const fotoUrl = fotosDetalhe[fotoAtualIndex];
+            const isMobile = window.innerWidth <= 768;
+
             media.innerHTML = `
-                <div class="zoom-container" id="zoomContainer" style="display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background: #000; width: 100%; height: 100%;">
-                    <!-- Fundo Embaçado (Efeito Azulejo) -->
-                    <img src="${fotoUrl}" onerror="this.style.display='none'" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:blur(20px); opacity:0.4; z-index:0;">
+                <div class="zoom-container" id="zoomContainer" style="display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background: #000; width: 100%; height: ${isMobile ? 'auto' : '100%'};">
+                    <!-- Fundo Embaçado (Efeito Azulejo) - Escondido no Mobile se a foto for proporcional -->
+                    <img src="${fotoUrl}" onerror="this.style.display='none'" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:blur(20px); opacity:0.4; z-index:0; ${isMobile ? 'display:none;' : ''}">
                     
                     <i class="fa-solid fa-image-slash" style="position:absolute; font-size: 60px; color:#555; z-index:1;"></i>
                     
-                    <!-- Imagem Principal (Sem Cortes) -->
+                    <!-- Imagem Principal -->
                     <img src="${fotoUrl}" class="zoom-img" id="zoomImg" onerror="this.style.display='none'" 
-                         style="position:relative; z-index:2; width:auto; height:auto; max-width:100%; max-height:100%; object-fit:contain; display:block;">
+                         style="position:relative; z-index:2; width:100%; height:auto; max-width:100%; max-height:${isMobile ? 'none' : '100%'}; object-fit:contain; display:block; touch-action: pan-y;">
                 </div>
                 ${fotosDetalhe.length > 1 ? `
                     <button class="detail-nav-btn detail-prev" onclick="mudarFotoDetalhe(-1)"><i class="fa-solid fa-chevron-left"></i></button>
