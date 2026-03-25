@@ -772,7 +772,6 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            overflow-y: auto;
         }
 
         /* ZOOM SYSTEM */
@@ -797,7 +796,66 @@
             -webkit-user-select: none;
         }
 
-        /* DETAIL CAROUSEL */
+        /* LIGHTBOX SYSTEM */
+        .lightbox-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.2s ease-out;
+            cursor: zoom-in;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .close-lightbox:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
         .detail-carousel-controls {
             position: absolute;
             bottom: 20px;
@@ -953,75 +1011,47 @@
             }
 
             .detail-modal {
-                padding: 0; /* Modal tela cheia no mobile */
+                padding: 20px 10px; /* Volta a "sobra" no fundo */
             }
 
             .detail-content {
                 width: 100%;
-                height: 100%;
-                max-height: 100vh;
-                border-radius: 0;
+                height: auto;
+                max-height: 85vh; /* Altura limitada com scroll interno */
+                border-radius: 12px;
+                overflow-y: auto;
             }
 
             .detail-body {
                 flex-direction: column;
-                height: 100%;
+                height: auto;
             }
 
             .detail-media {
+                height: 350px; /* Altura fixa menor na visualização inicial */
                 min-height: auto;
-                max-height: none;
+                max-height: 50vh;
                 flex: none;
                 width: 100%;
             }
 
             .detail-info {
-                padding: 25px; /* Mais espaço interno no mobile */
-            }
-
-            .detail-info h2 {
-                font-size: 24px; /* Título bem visível */
-            }
-
-            .detail-info .preco-atual {
-                font-size: 32px; /* Preço bem destacado */
+                padding: 20px;
             }
 
             .close-detail {
-                top: 15px;
-                right: 15px;
-                width: 45px;
-                height: 45px;
-                font-size: 22px;
-                background: rgba(0,0,0,0.5); /* Fundo para não sumir na foto */
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+                background: rgba(0,0,0,0.5);
                 border-radius: 50%;
                 z-index: 100;
             }
 
-            main {
-                padding: 15px 5px; /* Reduz padding lateral para dar mais espaço aos cards */
-            }
-
-            .grid-produtos {
-                /* Força explicitamente 2 colunas em dispositivos móveis */
-                grid-template-columns: 1fr 1fr;
-                gap: 8px; /* Menor gap para caber tudo bem apertado */
-            }
-
-            .card {
-                padding: 10px; /* Reduz padding interno do card na tela menor */
-            }
-
-            .card-content h3 {
-                font-size: 14px;
-            }
-
-            .card-content .preco {
-                font-size: 18px;
-            }
-
             .cart-sidebar {
-                width: 100%; /* Totalmente tela cheia */
+                width: 90%; 
                 max-width: none;
             }
 
@@ -1808,15 +1838,15 @@
             const isMobile = window.innerWidth <= 768;
 
             media.innerHTML = `
-                <div class="zoom-container" id="zoomContainer" style="display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background: #000; width: 100%; height: ${isMobile ? 'auto' : '100%'};">
-                    <!-- Fundo Embaçado (Efeito Azulejo) - Escondido no Mobile se a foto for proporcional -->
-                    <img src="${fotoUrl}" onerror="this.style.display='none'" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:blur(20px); opacity:0.4; z-index:0; ${isMobile ? 'display:none;' : ''}">
+                <div class="zoom-container" onclick="abrirLightbox('${fotoUrl}')" style="display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background: #000; width: 100%; height: 100%; cursor: pointer;">
+                    <!-- Fundo Embaçado (Efeito Azulejo) -->
+                    <img src="${fotoUrl}" onerror="this.style.display='none'" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:blur(20px); opacity:0.4; z-index:0;">
                     
                     <i class="fa-solid fa-image-slash" style="position:absolute; font-size: 60px; color:#555; z-index:1;"></i>
                     
                     <!-- Imagem Principal -->
-                    <img src="${fotoUrl}" class="zoom-img" id="zoomImg" onerror="this.style.display='none'" 
-                         style="position:relative; z-index:2; width:100%; height:auto; max-width:100%; max-height:${isMobile ? 'none' : '100%'}; object-fit:contain; display:block; touch-action: pan-y;">
+                    <img src="${fotoUrl}" class="zoom-img" onerror="this.style.display='none'" 
+                         style="position:relative; z-index:2; width:auto; height:auto; max-width:100%; max-height:100%; object-fit:contain; display:block;">
                 </div>
                 ${fotosDetalhe.length > 1 ? `
                     <button class="detail-nav-btn detail-prev" onclick="mudarFotoDetalhe(-1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -1824,7 +1854,6 @@
                     <div class="detail-carousel-controls">
                         ${fotosDetalhe.map((_, i) => `<div class="detail-dot ${i === fotoAtualIndex ? 'active' : ''}" onclick="fotoAtualIndex = ${i}; renderizarFotoDetalhe();"></div>`).join('')}
                     </div>` : ''}`;
-            setupZoom();
         }
 
         window.mudarFotoDetalhe = (dir) => {
@@ -1834,41 +1863,54 @@
             renderizarFotoDetalhe();
         };
 
-        function setupZoom() {
-            const container = document.getElementById('zoomContainer');
-            const img = document.getElementById('zoomImg');
+        window.abrirLightbox = (url) => {
+            const modal = document.getElementById('lightboxModal');
+            const content = document.getElementById('lightboxContent');
+            const isMobile = window.innerWidth <= 768;
+
+            content.innerHTML = `<img src="${url}" id="lightboxImg" class="lightbox-img" style="touch-action: ${isMobile ? 'pinch-zoom' : 'none'};">`;
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+            
+            if (!isMobile) {
+                setupLightboxZoom();
+            }
+        };
+
+        window.fecharLightbox = () => {
+            const modal = document.getElementById('lightboxModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        };
+
+        function setupLightboxZoom() {
+            const container = document.getElementById('lightboxContent');
+            const img = document.getElementById('lightboxImg');
             if (!container || !img) return;
 
             let isZoomed = false;
 
-            container.addEventListener('click', () => {
+            img.addEventListener('click', (e) => {
                 isZoomed = !isZoomed;
                 if (!isZoomed) {
                     img.style.transform = 'scale(1)';
-                    container.style.cursor = 'zoom-in';
+                    img.style.cursor = 'zoom-in';
                 } else {
-                    container.style.cursor = 'zoom-out';
-                    // Dispara um movimento fake para posicionar onde o mouse já está
-                    const event = new MouseEvent('mousemove', { bubbles: true, cancelable: true });
-                    // No click não temos PageX fácil como no listener, mas o mousemove seguinte resolve
+                    img.style.cursor = 'zoom-out';
+                    const { left, top, width, height } = container.getBoundingClientRect();
+                    const x = ((e.pageX - left - window.scrollX) / width) * 100;
+                    const y = ((e.pageY - top - window.scrollY) / height) * 100;
+                    img.style.transformOrigin = `${x}% ${y}%`;
                     img.style.transform = 'scale(2.5)';
                 }
             });
 
-            container.addEventListener('mousemove', (e) => {
+            img.addEventListener('mousemove', (e) => {
                 if (!isZoomed) return;
                 const { left, top, width, height } = container.getBoundingClientRect();
                 const x = ((e.pageX - left - window.scrollX) / width) * 100;
                 const y = ((e.pageY - top - window.scrollY) / height) * 100;
                 img.style.transformOrigin = `${x}% ${y}%`;
-                img.style.transform = 'scale(2.5)';
-            });
-
-            container.addEventListener('mouseleave', () => {
-                isZoomed = false;
-                img.style.transform = 'scale(1)';
-                img.style.transformOrigin = 'center center';
-                container.style.cursor = 'zoom-in';
             });
         }
 
@@ -1885,6 +1927,13 @@
                 <div class="detail-media" id="detailMedia"></div>
                 <div class="detail-info" id="detailInfo"></div>
             </div>
+        </div>
+    </div>
+    <!-- LIGHTBOX PARA ZOOM DE IMAGEM -->
+    <div id="lightboxModal" class="lightbox-modal" onclick="if(event.target === this) fecharLightbox()">
+        <button class="close-lightbox" onclick="fecharLightbox()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="lightbox-content" id="lightboxContent">
+            <!-- Imagem injetada via JS -->
         </div>
     </div>
 </body>
