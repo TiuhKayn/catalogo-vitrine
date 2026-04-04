@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LothWar - Vitrine</title>
+    <!-- OTIMIZAÇÃO: Preconnect para DNS/TLS Handshake inicial de terceiros -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com">
+    <link rel="preconnect" href="https://firebasestorage.googleapis.com">
+    <link rel="preconnect" href="https://i.ibb.co">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
     <style>
@@ -1111,7 +1118,7 @@
         </div>
         <div class="search-container" id="headerSearchContainer">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="Buscar produtos..." onkeyup="renderizarCategorias()">
+            <input type="text" id="searchInput" placeholder="Buscar produtos..." onkeyup="window.debounceSearch()">
         </div>
     </header>
 
@@ -1237,6 +1244,14 @@
         let categoriaAtiva = "Todas";
         let vendedorAtivo = null;
         window.ordemFixa = 'recentes'; // Nova Lógica de Ordenação
+        
+        let debounceTimer;
+        window.debounceSearch = () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                renderizarCategorias();
+            }, 300);
+        };
 
         window.mudarOrdem = (novaOrdem) => {
             window.ordemFixa = novaOrdem;
@@ -1285,9 +1300,22 @@
             const container = document.getElementById(containerId);
             if (!container) return;
             
+            // Descobre quais categorias têm pelo menos 1 item em estoque (Ativo / !p.vendido)
+            // Se estiver em perfil de vendedor, checar apenas do vendedor ativo
+            const categoriasComEstoque = new Set();
+            produtosGlobais.forEach(p => {
+                if (!p.vendido && (!vendedorAtivo || p.vendedorId === vendedorAtivo.id)) {
+                    categoriasComEstoque.add(p.categoria || 'Outros');
+                }
+            });
+
             container.className = 'categories-container';
             container.innerHTML = ''; // Limpa o container para evitar que as categorias se multipliquem infinitamente
+            
             categorias.forEach(cat => {
+                // A regra é: Exibe "Todas" sempre. Exibe as demais se houver estoque nela.
+                if (cat.nome !== "Todas" && !categoriasComEstoque.has(cat.nome)) return;
+
                 const div = document.createElement('div');
                 div.className = `cat-item ${categoriaAtiva === cat.nome ? 'active' : ''}`;
                 div.onclick = () => {
@@ -1445,12 +1473,10 @@
                         <div class="search-container" style="margin-top: 10px; width: 100%;">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="vendedorSearchInput" placeholder="Pesquisar nos itens deste vendedor..." onkeyup="
-                                // Delay para evitar engasgos, mas filtra direto
                                 const term = this.value.toLowerCase();
                                 const searchField = document.getElementById('searchInput'); // O global fakea o local
                                 if(searchField) searchField.value = term;
-                                renderizarCategorias();
-                                document.getElementById('vendedorSearchInput').focus();
+                                window.debounceSearch();
                             " value="${localSearch}">
                         </div>
                     </div>
@@ -1567,7 +1593,7 @@
                         for (let i = 0; i < fotos.length; i++) {
                             fotosHtml += `
                                 <div class="img-container">
-                                    <img src="${fotos[i]}" loading="lazy" onerror="this.style.display='none'" style="position: absolute; top: -20px; left: -20px; width: calc(100% + 40px); height: calc(100% + 40px); object-fit: cover; filter: blur(15px); z-index: 0;">
+                                    <img src="${fotos[i]}" loading="lazy" onload="if(this.naturalWidth < 600 && (this.src.includes('ibb.co') || this.src.includes('imgbb.com'))) this.parentElement.style.display='none';" onerror="this.parentElement.style.display='none';" style="position: absolute; top: -20px; left: -20px; width: calc(100% + 40px); height: calc(100% + 40px); object-fit: cover; filter: blur(15px); z-index: 0;">
                                     <div style="position: absolute; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 1;"></div>
                                     <i class="fa-solid fa-image-slash" style="position:absolute; z-index:1; font-size: 30px; color:#555;"></i>
                                     <img src="${fotos[i]}" alt="Foto ${i + 1}" loading="lazy" onerror="this.style.display='none'" style="position: relative; z-index: 2; border-radius: inherit;">
@@ -1847,7 +1873,7 @@
                     <!-- Imagem Principal -->
                     <img src="${fotoUrl}" class="zoom-img" 
                          onerror="this.style.display='none'" 
-                         onload="if(this.naturalWidth < 200 && this.src.includes('ibb.co')) this.style.display='none';"
+                         onload="if(this.naturalWidth < 600 && (this.src.includes('ibb.co') || this.src.includes('imgbb.com'))) this.style.display='none';"
                          style="position:relative; z-index:2; width:auto; height:auto; max-width:100%; max-height:100%; object-fit:contain; display:block;">
                 </div>
                 ${fotosDetalhe.length > 1 ? `
