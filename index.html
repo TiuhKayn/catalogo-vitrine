@@ -1242,6 +1242,15 @@
 
         categorias.unshift({ nome: "Todas", icon: "fa-border-all" });
 
+        const getOptimizedImageUrl = (url, width = 600) => {
+            if (!url || typeof url !== 'string') return url;
+            if (url.includes('cloudinary.com') && url.includes('/upload/')) {
+                if (url.includes('/f_auto,q_auto')) return url;
+                return url.replace('/upload/', `/upload/f_auto,q_auto,w_${width}/`);
+            }
+            return url;
+        };
+
         let produtosGlobais = [];
         let categoriaAtiva = "Todas";
         let vendedorAtivo = null;
@@ -1593,11 +1602,12 @@
 
                         fotosHtml += `<div class="card-images" id="slider-${p.id}">`;
                         for (let i = 0; i < fotos.length; i++) {
+                            const optUrl = getOptimizedImageUrl(fotos[i], 600);
                             fotosHtml += `
                                 <div class="img-container">
                                     <div style="position: absolute; inset: 0; background-color: rgba(0,0,0,0.6); z-index: 0;"></div>
                                     <i class="fa-solid fa-image-slash" style="position:absolute; z-index:1; font-size: 30px; color:#555;"></i>
-                                    <img src="${fotos[i]}" alt="Foto ${i + 1}" loading="lazy" onerror="this.style.display='none'" style="position: relative; z-index: 2; border-radius: inherit;">
+                                    <img src="${optUrl}" alt="Foto ${i + 1}" loading="lazy" onerror="this.style.display='none'" style="position: relative; z-index: 2; border-radius: inherit;">
                                 </div>
                             `;
                         }
