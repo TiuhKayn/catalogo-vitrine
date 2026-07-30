@@ -1242,13 +1242,26 @@
 
         categorias.unshift({ nome: "Todas", icon: "fa-border-all" });
 
-        const getOptimizedImageUrl = (url, width = 600) => {
+        const getOptimizedImageUrl = (url, width = null) => {
             if (!url || typeof url !== 'string') return url;
+            if (!width) return url;
             if (url.includes('cloudinary.com') && url.includes('/upload/')) {
                 if (url.includes('/f_auto,q_auto')) return url;
                 return url.replace('/upload/', `/upload/f_auto,q_auto,w_${width}/`);
             }
             return url;
+        };
+
+        // Qualidade dinâmica baseada no total de anúncios:
+        // ≤ 10 = 100% qualidade (sem otimização)
+        // 10–200 = redução linear de qualidade (2000px → 600px)
+        // ≥ 200 = 600px (qualidade mínima nos cards)
+        const getCardWidth = () => {
+            const total = produtosGlobais.length;
+            if (total <= 10) return null; // qualidade total, sem transformação
+            if (total >= 200) return 600;
+            const t = (total - 10) / (200 - 10);
+            return Math.round(2000 - t * (2000 - 600));
         };
 
         let produtosGlobais = [];
@@ -1601,8 +1614,9 @@
                         }
 
                         fotosHtml += `<div class="card-images" id="slider-${p.id}">`;
+                        const cardWidth = getCardWidth();
                         for (let i = 0; i < fotos.length; i++) {
-                            const optUrl = getOptimizedImageUrl(fotos[i], 600);
+                            const optUrl = cardWidth ? getOptimizedImageUrl(fotos[i], cardWidth) : fotos[i];
                             fotosHtml += `
                                 <div class="img-container">
                                     <div style="position: absolute; inset: 0; background-color: rgba(0,0,0,0.6); z-index: 0;"></div>
