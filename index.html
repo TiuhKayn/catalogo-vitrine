@@ -1398,9 +1398,19 @@
         }
 
         // 2. Fetch e Listen Firestore
+        let linkInicialProcessado = false;
         onSnapshot(collection(db, "produtos"), (snapshot) => {
             produtosGlobais = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderizarCategorias();
+
+            // Abre direto o produto se a URL foi compartilhada com ?produto=ID (só na primeira carga)
+            if (!linkInicialProcessado) {
+                linkInicialProcessado = true;
+                const produtoId = new URLSearchParams(window.location.search).get('produto');
+                if (produtoId && produtosGlobais.some(p => p.id === produtoId)) {
+                    abrirDetalhes(produtoId);
+                }
+            }
         });
 
         // 3. Renderizar seções e grid
@@ -1812,10 +1822,49 @@
         // --- SISTEMA DE DETALHES ---
         let fotosDetalhe = [];
         let fotoAtualIndex = 0;
+        let produtoDetalheAtualId = null;
+
+        function setUrlProduto(id) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('produto', id);
+            history.replaceState(null, '', url);
+        }
+
+        function limparUrlProduto() {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('produto');
+            history.replaceState(null, '', url);
+        }
+
+        window.compartilharProdutoAtual = () => {
+            if (!produtoDetalheAtualId) return;
+            const url = new URL(window.location.href);
+            url.searchParams.set('produto', produtoDetalheAtualId);
+            const link = url.toString();
+
+            if (navigator.share) {
+                navigator.share({ title: 'LothWar', url: link }).catch(() => {});
+                return;
+            }
+
+            const btn = document.getElementById('shareDetailBtn');
+            navigator.clipboard.writeText(link).then(() => {
+                if (!btn) return;
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                setTimeout(() => btn.innerHTML = original, 1500);
+            }).catch(e => {
+                console.error('Erro ao copiar link:', e);
+                alert('Não foi possível copiar o link.');
+            });
+        };
 
         window.abrirDetalhes = (id) => {
             const p = produtosGlobais.find(item => item.id === id);
             if (!p) return;
+
+            produtoDetalheAtualId = id;
+            setUrlProduto(id);
 
             fotosDetalhe = p.fotos || [];
             fotoAtualIndex = 0;
@@ -1877,6 +1926,8 @@
             const modal = document.getElementById('detailModal');
             modal.classList.remove('active');
             document.body.style.overflow = '';
+            produtoDetalheAtualId = null;
+            limparUrlProduto();
         };
 
         function renderizarFotoDetalhe() {
@@ -1972,6 +2023,7 @@
     <!-- MODAL DE DETALHES DO PRODUTO -->
     <div id="detailModal" class="detail-modal" onclick="if(event.target === this) fecharDetalhes()">
         <div class="detail-content">
+            <button class="close-detail" id="shareDetailBtn" style="right: 70px;" onclick="compartilharProdutoAtual()" title="Compartilhar produto"><i class="fa-solid fa-share-nodes"></i></button>
             <button class="close-detail" onclick="fecharDetalhes()"><i class="fa-solid fa-xmark"></i></button>
             <div class="detail-body">
                 <div class="detail-media" id="detailMedia"></div>
@@ -1987,4 +2039,4 @@
         </div>
     </div>
 </body>
-</html>
+</html>
