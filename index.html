@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://firebasestorage.googleapis.com">
     <link rel="preconnect" href="https://i.ibb.co">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -28,23 +28,27 @@
         }
 
         :root {
-            --bg-body: #161A23;
-            --bg-card: #202634;
-            --bg-header: #11141C;
-            --bg-input: #0B0D13;
-            --text-main: #FFFFFF;
-            --text-muted: #A0A5B5;
-            --accent-green: #10B981;
-            --accent-blue: #3B82F6;
-            --accent-red: #EF4444;
-            --accent-orange: #F59E0B;
-            --border-color: #374151;
-            --cat-bg: #2D3343;
-            --cat-hover: #3E465B;
+            --bg-body: #05070A;
+            --bg-card: #12161F;
+            --bg-header: #0A0E14;
+            --bg-input: #12161F;
+            --text-main: #EEF1F6;
+            --text-muted: #8A93A6;
+            --accent-green: #35D488;
+            --accent-blue: #3FC8FF;
+            --accent-blue-deep: #1B6FE0;
+            --accent-purple: #8B5CF6;
+            --accent-red: #FF6A3D;
+            --accent-orange: #F0B94D;
+            --border-color: #2E3646;
+            --card-top: #232A38;
+            --card-bottom: #12161F;
+            --cat-bg: #1B222E;
+            --cat-hover: #232C3B;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
         }
@@ -57,6 +61,7 @@
             flex-direction: column;
             gap: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -93,11 +98,11 @@
         }
 
         .logo span {
-            font-size: 32px;
-            font-weight: 800;
+            font-size: 26px;
+            font-weight: 900;
             color: var(--text-main);
-            letter-spacing: 2px;
-            font-family: 'MedievalSharp', cursive, serif;
+            letter-spacing: 3px;
+            font-family: 'Orbitron', sans-serif;
             text-transform: uppercase;
         }
 
@@ -134,6 +139,89 @@
             left: 15px;
             top: 14px;
             color: var(--text-muted);
+        }
+
+        /* HERO */
+        .hero-banner {
+            position: relative;
+            overflow: hidden;
+            padding: 48px 30px;
+            text-align: center;
+            background: radial-gradient(ellipse at 50% 130%, #0B1622 0%, var(--bg-body) 65%);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: -260px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            height: 900px;
+            max-width: 220vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(63, 200, 255, 0.22) 0%, rgba(139, 92, 246, 0.12) 45%, rgba(63, 200, 255, 0) 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 5px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 32px;
+            letter-spacing: 0.5px;
+            color: var(--text-main);
+            margin: 0 0 12px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.35), 0 0 28px rgba(63, 200, 255, 0.55), 0 0 48px rgba(139, 92, 246, 0.35);
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin: 0 0 22px;
+        }
+
+        .hero-cta {
+            border: none;
+            border-radius: 8px;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #05070A;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 0 26px rgba(63, 200, 255, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 34px rgba(139, 92, 246, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner { padding: 34px 18px; }
+            .hero-title { font-size: 21px; }
+            .hero-subtitle { font-size: 14px; }
+            .hero-cta { width: 100%; }
         }
 
         /* CATEGORIAS ROW */
@@ -178,29 +266,30 @@
         .cat-icon {
             width: 100px;
             height: 100px;
-            background-color: var(--cat-bg);
-            border-radius: 50%;
+            background: linear-gradient(160deg, var(--cat-bg), #0D1017);
+            border: 2px solid var(--border-color);
+            clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 40px;
+            font-size: 38px;
             color: var(--accent-blue);
-            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 22px rgba(63, 200, 255, 0.18);
+            transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
             -webkit-user-drag: none;
             /* Previne arraste de SVG/IMG caso existam */
         }
 
         .cat-item:hover .cat-icon {
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .cat-item:hover .cat-icon {
-            background-color: var(--cat-hover);
+            box-shadow: 0 0 30px rgba(63, 200, 255, 0.4);
+            background: linear-gradient(160deg, var(--cat-hover), #131722);
         }
 
         .cat-item.active .cat-icon {
-            background-color: var(--accent-blue);
-            color: white;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-deep));
+            border-color: var(--accent-blue);
+            color: #05070A;
+            box-shadow: 0 0 30px rgba(63, 200, 255, 0.55);
         }
 
         .cat-name {
@@ -221,12 +310,16 @@
         }
 
         .section-title {
-            font-size: 22px;
-            color: var(--accent-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 21px;
+            color: var(--text-main);
             margin: 30px 0 15px;
-            font-weight: 600;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding-left: 14px;
+            border-left: 4px solid var(--accent-blue);
+            text-shadow: 0 0 16px rgba(63, 200, 255, 0.3);
             display: inline-block;
         }
 
@@ -244,14 +337,15 @@
 
         /* CARD */
         .card {
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            padding: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(165deg, var(--card-top) 0%, var(--card-bottom) 60%);
+            clip-path: polygon(0 16px, 16px 0, 100% 0, 100% 100%, 0 100%);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
             display: flex;
             flex-direction: column;
             position: relative;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
             /* OTIMIZAÇÃO: Não renderizar o 'blur(15px)' infinito nos itens fora da visão da tela */
             content-visibility: auto;
             contain-intrinsic-size: 380px;
@@ -259,7 +353,7 @@
 
         .card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(63, 200, 255, 0.15);
         }
 
         .card-images {
@@ -353,7 +447,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: #4B5563;
+            background: #3A4356;
             color: white;
             padding: 3px 6px;
             border-radius: 4px;
@@ -401,9 +495,11 @@
         }
 
         .preco-atual {
-            font-size: 24px;
-            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
             color: var(--accent-orange);
+            text-shadow: 0 0 14px rgba(240, 185, 77, 0.35);
         }
 
         .card-actions {
@@ -418,16 +514,16 @@
             padding: 16px 10px;
             /* Mais generoso na altura pra dar mais área de clique */
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 16px;
             /* Aumento de fonte */
             cursor: pointer;
             text-align: center;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
         }
 
         .btn:hover {
-            opacity: 0.8;
+            opacity: 0.92;
             transform: translateY(-2px);
         }
 
@@ -914,7 +1010,7 @@
         .detail-price-box { margin-bottom: 5px; }
         .detail-desc { font-size: 15px; color: var(--text-muted); line-height: 1.6; white-space: pre-wrap; }
         .detail-badges { display: flex; gap: 15px; flex-wrap: wrap; margin-top: -5px; }
-        .detail-badge { background: var(--bg-input); color: #B0B3B8; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-color); }
+        .detail-badge { background: var(--bg-input); color: #8A93A6; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-color); }
         .detail-btn-group { display: flex; gap: 15px; margin-top: auto; }
 
         .cart-item-img {
@@ -974,15 +1070,17 @@
         }
 
         .btn-add {
-            background-color: var(--accent-blue);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            box-shadow: 0 0 14px rgba(63, 200, 255, 0.25);
         }
 
         .btn-buy {
-            background-color: var(--accent-green);
+            background: linear-gradient(135deg, var(--accent-green), #1B9D63);
+            box-shadow: 0 0 14px rgba(53, 212, 136, 0.25);
         }
 
         .btn-disabled {
-            background-color: #4B5563;
+            background-color: #3A4356;
             cursor: not-allowed;
         }
 
@@ -1120,6 +1218,16 @@
             <input type="text" id="searchInput" placeholder="Buscar produtos..." onkeyup="window.debounceSearch()">
         </div>
     </header>
+
+    <section class="hero-banner" id="heroBanner">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="hero-eyebrow">Marketplace de Guerra</div>
+            <h1 class="hero-title">Seu próximo upgrade é um saque de guerra</h1>
+            <p class="hero-subtitle">Peças de PC selecionadas como espólio de batalha — cada lote é único.</p>
+            <button class="hero-cta" onclick="document.getElementById('dynamicCatContainer').scrollIntoView({behavior:'smooth'})">Ver Ofertas de Guerra</button>
+        </div>
+    </section>
 
     <div id="dynamicCatContainer">
         <!-- Ícones de categoria injetados dinamicamente via JS -->
@@ -1463,6 +1571,8 @@
                 if(headerSearch) headerSearch.style.display = 'none';
                 if(dynamicCat) dynamicCat.style.display = 'none';
                 if(filterControls) filterControls.style.display = 'none';
+                const heroBanner = document.getElementById('heroBanner');
+                if (heroBanner) heroBanner.style.display = 'none';
 
                 // Só recria o cabeçalho se ele ainda não estiver lá
                 let profileHeader = document.getElementById('vendedorProfileHeader');
@@ -1524,6 +1634,8 @@
                 if(headerSearch) headerSearch.style.display = 'block';
                 if(dynamicCat) dynamicCat.style.display = 'flex';
                 if(filterControls) filterControls.style.display = 'flex';
+                const heroBanner = document.getElementById('heroBanner');
+                if (heroBanner) heroBanner.style.display = '';
                 
                 main.innerHTML = ''; // Se não for vendedor, pode limpar o root
                 main.appendChild(gridContainer);
@@ -1598,12 +1710,12 @@
                         }
 
                         blocoPrecoHtml = `
-                        <div style="color: #B0B3B8; text-decoration: line-through; font-size: 13px; margin-bottom: 2px;">R$ ${valorAntigo.toFixed(2).replace('.', ',')}</div>
-                        <div class="preco-atual" style="color: #FF6600; font-size: 22px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                        <div style="color: #8A93A6; text-decoration: line-through; font-size: 13px; margin-bottom: 2px;">R$ ${valorAntigo.toFixed(2).replace('.', ',')}</div>
+                        <div class="preco-atual">
                             R$ ${valorDesconto.toFixed(2).replace('.', ',')}
                         </div>
                         <div style="margin-top: 6px; display: flex; align-items: center; gap: 8px;">
-                            <span style="background-color: #FF0000; color: white; padding: 3px 6px; border-radius: 4px; font-size: 12px; font-weight: bold;">-${p.percentualDesconto}%</span>
+                            <span style="background: linear-gradient(135deg, #FF6A3D, #C8451C); color: #05070A; padding: 3px 7px; border-radius: 4px; font-size: 12px; font-weight: 700;">-${p.percentualDesconto}%</span>
                             ${spanOferta}
                         </div>
                         `;
@@ -1874,9 +1986,9 @@
             let precoHtml = '';
             if (p.promocao) {
                 const precoPromo = p.valor * (1 - p.percentualDesconto / 100);
-                precoHtml = `<div style="display:flex; flex-direction:column; gap:5px;"><span style="text-decoration:line-through; color:var(--text-muted); font-size:14px;">R$ ${p.valor.toFixed(2).replace('.', ',')}</span><span style="font-size:28px; font-weight:800; color:white;">R$ ${precoPromo.toFixed(2).replace('.', ',')} <span style="color:#4ADE80; font-size:16px;">-${p.percentualDesconto}%</span></span></div>`;
+                precoHtml = `<div style="display:flex; flex-direction:column; gap:5px;"><span style="text-decoration:line-through; color:var(--text-muted); font-size:14px;">R$ ${p.valor.toFixed(2).replace('.', ',')}</span><span style="font-family:'Orbitron',sans-serif; font-size:26px; font-weight:800; color:var(--accent-orange); text-shadow: 0 0 14px rgba(240,185,77,0.35);">R$ ${precoPromo.toFixed(2).replace('.', ',')} <span style="font-family:'Rajdhani',sans-serif; color:#FF6A3D; font-size:16px;">-${p.percentualDesconto}%</span></span></div>`;
             } else {
-                precoHtml = `<span style="font-size:28px; font-weight:800; color:white;">R$ ${p.valor.toFixed(2).replace('.', ',')}</span>`;
+                precoHtml = `<span style="font-family:'Orbitron',sans-serif; font-size:26px; font-weight:800; color:var(--accent-orange); text-shadow: 0 0 14px rgba(240,185,77,0.35);">R$ ${p.valor.toFixed(2).replace('.', ',')}</span>`;
             }
 
             const safeName = p.nome.replace(/'/g, "\\'");
@@ -1903,10 +2015,10 @@
                         <i class="fa-solid fa-layer-group" style="color:var(--accent-blue);"></i>
                         Categoria: <strong style="color:white;">${p.categoria || 'Geral'}</strong>
                     </div>
-                    <div style="color:#888; font-size:13px; display:flex; align-items:center; gap:6px;">
-                        ${p.vendido 
-                            ? '<i class="fa-solid fa-circle-xmark" style="color:#FF4B4B;"></i> Status: <strong style="color:white;">Indisponível</strong>' 
-                            : '<i class="fa-solid fa-check-circle" style="color:#4ADE80;"></i> Status: <strong style="color:white;">Disponível</strong>'}
+                    <div style="color:#8A93A6; font-size:13px; display:flex; align-items:center; gap:6px;">
+                        ${p.vendido
+                            ? '<i class="fa-solid fa-circle-xmark" style="color:#FF6A3D;"></i> Status: <strong style="color:white;">Indisponível</strong>'
+                            : '<i class="fa-solid fa-check-circle" style="color:#35D488;"></i> Status: <strong style="color:white;">Disponível</strong>'}
                     </div>
                 </div>
 
