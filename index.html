@@ -338,7 +338,7 @@
         /* CARD */
         .card {
             background: linear-gradient(165deg, var(--card-top) 0%, var(--card-bottom) 60%);
-            clip-path: polygon(0 16px, 16px 0, 100% 0, 100% 100%, 0 100%);
+            border-radius: 16px;
             border: 1px solid var(--border-color);
             padding: 12px;
             box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
@@ -1070,13 +1070,17 @@
         }
 
         .btn-add {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-            box-shadow: 0 0 14px rgba(63, 200, 255, 0.25);
+            background: transparent;
+            border: 1.5px solid var(--border-color);
+        }
+
+        .btn-add:hover {
+            border-color: var(--accent-blue);
         }
 
         .btn-buy {
-            background: linear-gradient(135deg, var(--accent-green), #1B9D63);
-            box-shadow: 0 0 14px rgba(53, 212, 136, 0.25);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            box-shadow: 0 0 14px rgba(63, 200, 255, 0.25);
         }
 
         .btn-disabled {
