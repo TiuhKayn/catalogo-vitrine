@@ -50,7 +50,9 @@
         body {
             font-family: 'Rajdhani', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-body);
-            background-image: radial-gradient(ellipse 1100px 900px at 50% 260px, rgba(63, 200, 255, 0.09) 0%, rgba(139, 92, 246, 0.055) 35%, rgba(63, 200, 255, 0.02) 60%, transparent 88%);
+            background-image:
+                radial-gradient(ellipse 1100px 900px at 50% 260px, rgba(63, 200, 255, 0.09) 0%, rgba(139, 92, 246, 0.055) 35%, rgba(63, 200, 255, 0.02) 60%, transparent 88%),
+                radial-gradient(ellipse 900px 380px at 50% 100%, rgba(139, 92, 246, 0.05) 0%, rgba(63, 200, 255, 0.025) 45%, transparent 80%);
             background-repeat: no-repeat;
             color: var(--text-main);
         }
@@ -58,6 +60,7 @@
         /* HEADER */
         header {
             background-color: var(--bg-header);
+            background-image: radial-gradient(ellipse 800px 160px at 50% 0%, rgba(63, 200, 255, 0.07) 0%, transparent 75%);
             padding: 15px 30px;
             display: flex;
             flex-direction: column;
@@ -1006,7 +1009,7 @@
         .detail-prev { left: 0; border-radius: 0 8px 8px 0; }
         .detail-next { right: 0; border-radius: 8px 0 0 8px; }
 
-        .detail-title { font-size: 26px; font-weight: 700; color: white; margin: 0; }
+        .detail-title { font-size: 26px; font-weight: 700; color: white; margin: 0; padding-right: 90px; }
         .detail-seller { color: var(--accent-blue); font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; }
         .detail-seller:hover { text-decoration: underline; }
         .detail-price-box { margin-bottom: 5px; }
@@ -1147,6 +1150,10 @@
 
             .detail-info {
                 padding: 20px;
+            }
+
+            .detail-title {
+                padding-right: 0;
             }
 
             .close-detail {
@@ -2057,14 +2064,15 @@
             const isMobile = window.innerWidth <= 768;
 
             media.innerHTML = `
-                <div class="zoom-container" onclick="abrirLightbox('${fotoUrl}')" style="display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background: #111; width: 100%; height: 100%; cursor: pointer;">
+                <div class="zoom-container" id="zoomContainer" style="display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background: #111; width: 100%; height: 100%; cursor: grab;">
                     <!-- Fundo escuro simples (sem blur pesado) -->
                     <i class="fa-solid fa-image-slash" style="position:absolute; font-size: 60px; color:#555; z-index:1;"></i>
-                    
+
                     <!-- Imagem Principal -->
-                    <img src="${fotoUrl}" class="zoom-img" 
-                         onerror="this.style.display='none'" 
-                         style="position:relative; z-index:2; width:auto; height:auto; max-width:100%; max-height:100%; object-fit:contain; display:block;">
+                    <img src="${fotoUrl}" class="zoom-img"
+                         onerror="this.style.display='none'"
+                         draggable="false"
+                         style="position:relative; z-index:2; width:auto; height:auto; max-width:100%; max-height:100%; object-fit:contain; display:block; pointer-events:none;">
                 </div>
                 ${fotosDetalhe.length > 1 ? `
                     <button class="detail-nav-btn detail-prev" onclick="mudarFotoDetalhe(-1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -2072,6 +2080,52 @@
                     <div class="detail-carousel-controls">
                         ${fotosDetalhe.map((_, i) => `<div class="detail-dot ${i === fotoAtualIndex ? 'active' : ''}" onclick="fotoAtualIndex = ${i}; renderizarFotoDetalhe();"></div>`).join('')}
                     </div>` : ''}`;
+
+            setupZoomContainerDrag(fotoUrl);
+        }
+
+        // Arrastar a imagem em foco pra navegar entre fotos; clique sem arrastar abre o zoom
+        function setupZoomContainerDrag(fotoUrl) {
+            const el = document.getElementById('zoomContainer');
+            if (!el) return;
+
+            const DRAG_THRESHOLD = 40;
+            let isDown = false;
+            let dragged = false;
+            let startX = 0;
+            let deltaX = 0;
+
+            const start = (x) => {
+                isDown = true;
+                dragged = false;
+                startX = x;
+                deltaX = 0;
+                el.style.cursor = 'grabbing';
+            };
+            const move = (x) => {
+                if (!isDown) return;
+                deltaX = x - startX;
+                if (Math.abs(deltaX) > 8) dragged = true;
+            };
+            const finish = () => {
+                if (!isDown) return;
+                isDown = false;
+                el.style.cursor = 'grab';
+                if (dragged && Math.abs(deltaX) > DRAG_THRESHOLD && fotosDetalhe.length > 1) {
+                    mudarFotoDetalhe(deltaX < 0 ? 1 : -1);
+                } else if (!dragged) {
+                    abrirLightbox(fotoUrl);
+                }
+            };
+
+            el.addEventListener('mousedown', (e) => { e.preventDefault(); start(e.pageX); });
+            el.addEventListener('mousemove', (e) => move(e.pageX));
+            el.addEventListener('mouseup', finish);
+            el.addEventListener('mouseleave', finish);
+
+            el.addEventListener('touchstart', (e) => start(e.touches[0].pageX), { passive: true });
+            el.addEventListener('touchmove', (e) => move(e.touches[0].pageX), { passive: true });
+            el.addEventListener('touchend', finish);
         }
 
         window.mudarFotoDetalhe = (dir) => {
@@ -2100,6 +2154,20 @@
             modal.classList.remove('active');
             setTimeout(() => modal.style.display = 'none', 300);
         };
+
+        // ESC fecha o lightbox (se tiver aberto em cima) ou o anúncio em foco
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            const lightbox = document.getElementById('lightboxModal');
+            if (lightbox && lightbox.classList.contains('active')) {
+                fecharLightbox();
+                return;
+            }
+            const detail = document.getElementById('detailModal');
+            if (detail && detail.classList.contains('active')) {
+                fecharDetalhes();
+            }
+        });
 
         function setupLightboxZoom() {
             const container = document.getElementById('lightboxContent');
