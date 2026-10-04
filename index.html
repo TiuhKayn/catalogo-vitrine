@@ -240,6 +240,10 @@
             -ms-overflow-style: none;
             /* IE and Edge */
             cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .categories-container:active {
@@ -1483,6 +1487,7 @@
             let dragged = false; // flag para diferenciar clique de arraste
 
             container.addEventListener('mousedown', (e) => {
+                e.preventDefault(); // impede o navegador de iniciar uma seleção/arraste de texto
                 isDown = true;
                 dragged = false; // reseta a flag no mousedown
                 container.classList.add('active'); // caso queira usar pra style de ::active css
