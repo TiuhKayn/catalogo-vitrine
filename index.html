@@ -3,7 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#05070A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>LothWar - Vitrine</title>
     <!-- OTIMIZAÇÃO: Preconnect para DNS/TLS Handshake inicial de terceiros -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
@@ -17,6 +21,11 @@
     <style>
         * {
             box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
         html,
@@ -275,8 +284,8 @@
         .cat-icon {
             width: 100px;
             height: 100px;
-            background: linear-gradient(160deg, var(--cat-bg), #0D1017);
-            border: 2px solid var(--border-color);
+            background: linear-gradient(160deg, rgba(63, 200, 255, 0.16), rgba(27, 111, 224, 0.10) 60%, #0B1320);
+            border: 2px solid rgba(63, 200, 255, 0.38);
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -291,7 +300,8 @@
 
         .cat-item:hover .cat-icon {
             box-shadow: 0 0 30px rgba(63, 200, 255, 0.4);
-            background: linear-gradient(160deg, var(--cat-hover), #131722);
+            border-color: rgba(63, 200, 255, 0.7);
+            background: linear-gradient(160deg, rgba(63, 200, 255, 0.28), rgba(27, 111, 224, 0.18) 60%, #0F1A2C);
         }
 
         .cat-item.active .cat-icon {
@@ -305,7 +315,7 @@
             font-size: 16px;
             font-weight: 600;
             text-align: center;
-            color: var(--text-muted);
+            color: #B9C6DC;
             white-space: nowrap;
         }
 
@@ -544,6 +554,7 @@
             width: 280px;
             max-width: 80vw;
             height: 100vh;
+            height: 100dvh;
             background-color: var(--bg-card);
             box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
             z-index: 1000;
@@ -562,7 +573,9 @@
             left: 0;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             background-color: rgba(0, 0, 0, 0.6);
+            -webkit-backdrop-filter: blur(2px);
             backdrop-filter: blur(2px);
             z-index: 999;
             opacity: 0;
@@ -666,6 +679,7 @@
             width: 320px;
             max-width: 85vw;
             height: 100vh;
+            height: 100dvh;
             background-color: var(--bg-card);
             box-shadow: -4px 0 15px rgba(0, 0, 0, 0.5);
             z-index: 1000;
@@ -684,7 +698,9 @@
             left: 0;
             width: 100%;
             height: 100vh;
+            height: 100dvh;
             background-color: rgba(0, 0, 0, 0.6);
+            -webkit-backdrop-filter: blur(2px);
             backdrop-filter: blur(2px);
             z-index: 999;
             opacity: 0;
@@ -754,6 +770,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.85);
+            -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
             z-index: 2000;
             display: none;
@@ -780,6 +797,7 @@
             border: 1px solid var(--border-color);
             position: relative;
             max-height: 90vh;
+            max-height: 90dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -863,6 +881,7 @@
             }
             .detail-content {
                 max-height: 95vh;
+                max-height: 95dvh;
             }
         }
 
@@ -961,6 +980,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            -webkit-backdrop-filter: blur(5px);
             backdrop-filter: blur(5px);
         }
 
@@ -978,6 +998,7 @@
             background: rgba(0, 0, 0, 0.3);
             padding: 8px 15px;
             border-radius: 20px;
+            -webkit-backdrop-filter: blur(4px);
             backdrop-filter: blur(4px);
         }
 
@@ -1134,7 +1155,8 @@
             .detail-content {
                 width: 100%;
                 height: auto;
-                max-height: 85vh; /* Altura limitada com scroll interno */
+                max-height: 85vh;
+                max-height: 85dvh; /* Altura limitada com scroll interno */
                 border-radius: 12px;
                 overflow-y: auto;
             }
@@ -1148,6 +1170,7 @@
                 height: 350px; /* Altura fixa menor na visualização inicial */
                 min-height: auto;
                 max-height: 50vh;
+                max-height: 50dvh;
                 flex: none;
                 width: 100%;
             }
@@ -1208,6 +1231,37 @@
             .nav-sidebar {
                 width: 80%;
             }
+        }
+
+        /* AJUSTES MOBILE (iOS Safari, Android Chrome, Samsung Internet etc.) */
+        a, button, .cat-item, .btn, select, input { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        img { -webkit-touch-callout: none; }
+        header {
+            padding-top: max(15px, env(safe-area-inset-top));
+            padding-left: max(30px, env(safe-area-inset-left));
+            padding-right: max(30px, env(safe-area-inset-right));
+        }
+        .nav-sidebar, .cart-sidebar {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            box-sizing: border-box;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+        main { padding-bottom: max(40px, calc(env(safe-area-inset-bottom) + 24px)); }
+        .detail-content, .detail-modal { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+        .search-container input, input[type="text"], input[type="search"] { -webkit-appearance: none; appearance: none; }
+        @media (max-width: 768px) {
+            header {
+                padding-left: max(15px, env(safe-area-inset-left));
+                padding-right: max(15px, env(safe-area-inset-right));
+            }
+            main { padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+            /* iOS dá zoom automático em campos com fonte menor que 16px */
+            input, select, textarea, .search-container input { font-size: 16px !important; }
+            .categories-container { -webkit-overflow-scrolling: touch; padding-left: 12px; padding-right: 12px; }
+            .cat-name, .cat-item span { font-size: 12px; }
         }
     </style>
 </head>
